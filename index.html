@@ -6,35 +6,41 @@
   <title>Amtsilati Digital — Belajar Kitab Kuning Cepat</title>
   <link rel="manifest" href="./manifest.json" />
   <link rel="icon" href="./icon.svg" type="image/svg+xml" />
-  <meta name="theme-color" content="#0284c7" />
+  <meta name="theme-color" content="#064e3b" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,700&family=Aref+Ruqaa:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
-      --primary: #0284c7;
-      --primary-dark: #0369a1;
-      --secondary: #0d9488;
-      --accent: #f59e0b;
-      --bg: #f1f5f9;
+      --emerald-deep: #064e3b;
+      --emerald-mid: #047857;
+      --teal-lux: #0f766e;
+      --gold-lux: #d97706;
+      --gold-bright: #f59e0b;
+      --gold-soft: #fef3c7;
+      --bg: #f4f6f5;
       --card: #ffffff;
       --text: #0f172a;
       --muted: #64748b;
       --border: #e2e8f0;
-      --danger: #ef4444;
-      --success: #10b981;
-      --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+      --danger: #dc2626;
+      --success: #059669;
+      --ease-lux: cubic-bezier(0.22, 1, 0.36, 1);
+      --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    body {
+    html, body {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      background: #e2e8f0;
+      background: #dfe6e3;
       color: var(--text);
+      min-height: 100vh;
+      scroll-behavior: smooth;
+    }
+    body {
       display: flex;
       justify-content: center;
-      min-height: 100vh;
     }
 
     .app-shell {
@@ -43,8 +49,8 @@
       background: var(--bg);
       min-height: 100vh;
       position: relative;
-      box-shadow: 0 20px 60px rgba(15, 23, 42, 0.15);
-      padding-bottom: 84px;
+      box-shadow: 0 24px 70px rgba(6, 78, 59, 0.18);
+      scroll-behavior: smooth;
     }
 
     .arabic {
@@ -53,38 +59,95 @@
       line-height: 2.1;
     }
 
-    .screen {
-      animation: pageEnter 0.45s var(--ease-spring) forwards;
+    .arab-display {
+      font-family: 'Aref Ruqaa', 'Amiri', serif;
+      letter-spacing: 0.2px;
     }
-    @keyframes pageEnter {
-      from { opacity: 0; transform: translateY(18px) scale(0.985); }
+
+    .screen {
+      animation: luxEnter 0.52s var(--ease-lux) both;
+    }
+    .screen-exit {
+      animation: luxExit 0.32s var(--ease-lux) forwards;
+    }
+
+    @keyframes luxEnter {
+      from { opacity: 0; transform: translateY(22px) scale(0.98); }
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
+    @keyframes luxExit {
+      from { opacity: 1; transform: translateY(0) scale(1); }
+      to { opacity: 0; transform: translateY(-14px) scale(0.98); }
+    }
 
-    .stagger-1 { animation: slideUp 0.45s var(--ease-spring) 0.05s both; }
-    .stagger-2 { animation: slideUp 0.45s var(--ease-spring) 0.12s both; }
-    .stagger-3 { animation: slideUp 0.45s var(--ease-spring) 0.18s both; }
-    .stagger-4 { animation: slideUp 0.45s var(--ease-spring) 0.24s both; }
+    .stagger-1 { animation: slideUpLux 0.5s var(--ease-lux) 0.06s both; }
+    .stagger-2 { animation: slideUpLux 0.5s var(--ease-lux) 0.13s both; }
+    .stagger-3 { animation: slideUpLux 0.5s var(--ease-lux) 0.2s both; }
+    .stagger-4 { animation: slideUpLux 0.5s var(--ease-lux) 0.27s both; }
 
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(16px); }
+    @keyframes slideUpLux {
+      from { opacity: 0; transform: translateY(18px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
     .btn-press {
-      transition: transform 0.18s var(--ease-spring), box-shadow 0.2s ease, background 0.2s ease;
+      transition: transform 0.2s var(--ease-bounce), box-shadow 0.25s var(--ease-lux), filter 0.2s ease;
       cursor: pointer;
     }
-    .btn-press:active { transform: scale(0.96); }
+    .btn-press:hover { filter: brightness(1.03); }
+    .btn-press:active { transform: scale(0.95); }
 
     .hidden { display: none !important; }
 
-    .auth-hero {
-      background: linear-gradient(135deg, #0284c7 0%, #0d9488 65%, #0f766e 100%);
-      padding: 44px 24px 68px;
+    /* Overlay Animasi Proses Masuk (Login -> App) */
+    .entry-overlay {
+      position: fixed;
+      inset: 0;
+      max-width: 480px;
+      margin: 0 auto;
+      background: linear-gradient(145deg, #064e3b 0%, #0f766e 55%, #b45309 135%);
       color: #fff;
-      border-bottom-left-radius: 32px;
-      border-bottom-right-radius: 32px;
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 28px;
+      text-align: center;
+      animation: overlayFadeIn 0.35s var(--ease-lux) forwards;
+    }
+    .entry-overlay.fade-out {
+      animation: overlayFadeOut 0.45s var(--ease-lux) forwards;
+    }
+    @keyframes overlayFadeIn {
+      from { opacity: 0; transform: scale(1.03); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes overlayFadeOut {
+      from { opacity: 1; transform: scale(1); }
+      to { opacity: 0; transform: scale(0.96); }
+    }
+    .lux-spinner {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      border: 3.5px solid rgba(254, 243, 199, 0.25);
+      border-top-color: var(--gold-bright);
+      border-right-color: #fff;
+      animation: spinLux 0.9s linear infinite;
+    }
+    @keyframes spinLux {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Auth Screen */
+    .auth-hero {
+      background: linear-gradient(140deg, var(--emerald-deep) 0%, var(--teal-lux) 62%, var(--gold-lux) 140%);
+      padding: 46px 24px 70px;
+      color: #fff;
+      border-bottom-left-radius: 34px;
+      border-bottom-right-radius: 34px;
       position: relative;
       overflow: hidden;
     }
@@ -92,35 +155,38 @@
       content: '';
       position: absolute;
       border-radius: 50%;
-      background: rgba(255,255,255,0.1);
+      background: radial-gradient(circle, rgba(251, 191, 36, 0.28), transparent 70%);
       animation: floatOrb 7s ease-in-out infinite alternate;
     }
-    .auth-hero::before { width: 160px; height: 160px; top: -40px; right: -30px; }
-    .auth-hero::after { width: 110px; height: 110px; bottom: 10px; left: -25px; animation-delay: 1.5s; }
+    .auth-hero::before { width: 180px; height: 180px; top: -45px; right: -35px; }
+    .auth-hero::after { width: 130px; height: 130px; bottom: 8px; left: -30px; animation-delay: 1.6s; }
     @keyframes floatOrb {
       from { transform: translateY(0) scale(1); }
-      to { transform: translateY(14px) scale(1.06); }
+      to { transform: translateY(15px) scale(1.08); }
     }
 
     .brand-badge {
       display: inline-flex;
       align-items: center;
-      gap: 10px;
-      background: rgba(255,255,255,0.18);
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(251, 191, 36, 0.45);
       backdrop-filter: blur(8px);
-      padding: 8px 14px;
+      padding: 7px 14px;
       border-radius: 99px;
       font-weight: 700;
-      font-size: 13px;
+      font-size: 15px;
+      color: #fef3c7;
       margin-bottom: 14px;
     }
 
     .auth-card {
       background: var(--card);
-      margin: -42px 20px 24px;
+      margin: -42px 20px 28px;
       padding: 24px 20px;
-      border-radius: 24px;
-      box-shadow: 0 14px 35px rgba(15, 23, 42, 0.08);
+      border-radius: 26px;
+      box-shadow: 0 16px 38px rgba(6, 78, 59, 0.1);
+      border: 1px solid rgba(217, 119, 6, 0.14);
       position: relative;
       z-index: 2;
     }
@@ -141,13 +207,13 @@
       font-family: inherit;
       font-size: 14px;
       background: #f8fafc;
-      transition: all 0.2s ease;
+      transition: all 0.22s var(--ease-lux);
     }
     .form-input:focus, .form-select:focus {
       outline: none;
-      border-color: var(--primary);
+      border-color: var(--emerald-mid);
       background: #fff;
-      box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.12);
+      box-shadow: 0 0 0 4px rgba(4, 120, 87, 0.14);
     }
 
     .pwd-rules {
@@ -164,12 +230,12 @@
       width: 100%;
       padding: 14px;
       border: none;
-      border-radius: 14px;
-      background: linear-gradient(135deg, #0284c7, #0d9488);
+      border-radius: 15px;
+      background: linear-gradient(135deg, var(--emerald-deep) 0%, var(--teal-lux) 68%, var(--gold-lux) 150%);
       color: #fff;
       font-weight: 700;
       font-size: 15px;
-      box-shadow: 0 8px 20px rgba(2, 132, 199, 0.28);
+      box-shadow: 0 10px 22px rgba(6, 78, 59, 0.25);
     }
 
     .auth-switch {
@@ -179,38 +245,53 @@
       color: var(--muted);
     }
     .auth-switch a {
-      color: var(--primary);
-      font-weight: 700;
+      color: var(--emerald-mid);
+      font-weight: 800;
       text-decoration: none;
       cursor: pointer;
     }
 
-    .home-header {
-      background: linear-gradient(135deg, #0284c7 0%, #0d9488 100%);
-      padding: 22px 20px 56px;
+    /* Sticky Header Setelah Login */
+    .sticky-header {
+      position: sticky;
+      top: 0;
+      z-index: 60;
+      background: linear-gradient(135deg, var(--emerald-deep) 0%, var(--teal-lux) 72%, var(--gold-lux) 155%);
+      padding: 16px 18px 20px;
       color: #fff;
-      border-bottom-left-radius: 28px;
-      border-bottom-right-radius: 28px;
+      border-bottom-left-radius: 26px;
+      border-bottom-right-radius: 26px;
+      box-shadow: 0 10px 28px rgba(6, 78, 59, 0.22);
     }
     .top-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 10px;
     }
     .role-pill {
-      background: rgba(255,255,255,0.2);
-      padding: 4px 10px;
+      display: inline-block;
+      background: rgba(254, 243, 199, 0.18);
+      border: 1px solid rgba(251, 191, 36, 0.5);
+      color: #fef3c7;
+      padding: 4px 11px;
       border-radius: 99px;
-      font-size: 11px;
+      font-size: 13px;
       font-weight: 700;
+    }
+
+    .main-body {
+      padding-top: 14px;
+      padding-bottom: 24px;
     }
 
     .hero-progress {
       background: #fff;
-      margin: -38px 18px 18px;
+      margin: 0 18px 18px;
       padding: 18px;
       border-radius: 22px;
-      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.07);
+      box-shadow: 0 10px 26px rgba(6, 78, 59, 0.06);
+      border: 1px solid rgba(217, 119, 6, 0.15);
     }
     .progress-track {
       height: 10px;
@@ -221,18 +302,19 @@
     }
     .progress-fill {
       height: 100%;
-      background: linear-gradient(90deg, #0284c7, #10b981);
+      background: linear-gradient(90deg, var(--emerald-mid), var(--gold-bright));
       border-radius: 99px;
-      transition: width 0.7s var(--ease-spring);
+      transition: width 0.75s var(--ease-lux);
     }
 
     .section-title {
-      font-size: 15px;
-      font-weight: 800;
+      font-size: 18px;
+      font-weight: 700;
       margin: 0 18px 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      color: var(--emerald-deep);
     }
     .subject-grid {
       display: grid;
@@ -246,15 +328,13 @@
       padding: 16px 14px;
       box-shadow: 0 6px 18px rgba(15, 23, 42, 0.04);
       border: 1.5px solid transparent;
-      transition: all 0.25s var(--ease-spring);
+      transition: all 0.28s var(--ease-lux);
       cursor: pointer;
-      position: relative;
-      overflow: hidden;
     }
     .subject-card:hover {
-      transform: translateY(-3px);
-      border-color: rgba(2, 132, 199, 0.3);
-      box-shadow: 0 12px 24px rgba(2, 132, 199, 0.12);
+      transform: translateY(-4px);
+      border-color: rgba(217, 119, 6, 0.45);
+      box-shadow: 0 14px 26px rgba(6, 78, 59, 0.11);
     }
     .subject-icon {
       width: 44px;
@@ -266,19 +346,20 @@
       font-size: 22px;
       margin-bottom: 10px;
     }
-    .subject-card h4 { font-size: 14px; font-weight: 800; margin-bottom: 3px; }
+    .subject-card h4 { font-size: 16px; font-weight: 700; margin-bottom: 3px; color: var(--emerald-deep); }
     .subject-card p { font-size: 11px; color: var(--muted); line-height: 1.4; }
 
     .card-box {
       background: #fff;
       margin: 0 18px 14px;
       padding: 18px;
-      border-radius: 20px;
-      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.04);
+      border-radius: 22px;
+      box-shadow: 0 6px 20px rgba(15, 23, 42, 0.04);
+      border: 1px solid #edf2f0;
     }
     .arab-stage {
-      background: linear-gradient(135deg, #f0f9ff, #ecfdf5);
-      border: 1.5px solid #bae6fd;
+      background: linear-gradient(135deg, #ecfdf5, #fffbeb);
+      border: 1.5px solid rgba(217, 119, 6, 0.35);
       border-radius: 18px;
       padding: 18px 14px;
       text-align: center;
@@ -293,26 +374,27 @@
       border-radius: 12px;
       font-size: 24px;
       cursor: pointer;
-      transition: all 0.2s var(--ease-spring);
+      transition: all 0.22s var(--ease-bounce);
     }
     .word-chip.active, .word-chip:hover {
-      background: #0284c7;
-      color: #fff;
-      border-color: #0284c7;
-      transform: translateY(-2px);
+      background: var(--emerald-deep);
+      color: #fef3c7;
+      border-color: var(--gold-lux);
+      transform: translateY(-3px);
     }
     .bedah-panel {
-      background: #0f172a;
+      background: #062e24;
       color: #fff;
       padding: 14px;
       border-radius: 14px;
       font-size: 13px;
       margin-top: 10px;
-      animation: pageEnter 0.25s ease;
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      animation: luxEnter 0.28s var(--ease-lux);
     }
     .tatimmah-box {
       background: #fffbeb;
-      border-left: 4px solid #f59e0b;
+      border-left: 4px solid var(--gold-lux);
       padding: 12px 14px;
       border-radius: 12px;
       font-size: 12.5px;
@@ -333,21 +415,109 @@
       font-weight: 600;
       transition: all 0.2s ease;
     }
-    .quiz-opt.correct { background: #ecfdf5; border-color: #10b981; color: #065f46; }
-    .quiz-opt.wrong { background: #fef2f2; border-color: #ef4444; color: #991b1b; }
+    .quiz-opt.correct { background: #ecfdf5; border-color: #059669; color: #065f46; }
+    .quiz-opt.wrong { background: #fef2f2; border-color: #dc2626; color: #991b1b; }
 
-    .bottom-nav {
+    /* Bubble Melayang "Tanya Ustadz" (Ala Messenger) */
+    .ask-bubble {
       position: fixed;
-      bottom: 0;
-      width: 100%;
-      max-width: 480px;
-      background: rgba(255, 255, 255, 0.94);
-      backdrop-filter: blur(12px);
+      bottom: 84px;
+      right: max(18px, calc(50% - 222px));
+      z-index: 80;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--gold-lux), #b45309);
+      color: #fff;
+      border: 2px solid #fef3c7;
+      padding: 11px 16px;
+      border-radius: 99px;
+      font-weight: 700;
+      font-size: 13px;
+      box-shadow: 0 12px 28px rgba(180, 83, 9, 0.38);
+      animation: bubbleFloat 3s ease-in-out infinite;
+    }
+    @keyframes bubbleFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    /* Popup Chat Kecil ala Messenger */
+    .chat-popup {
+      position: fixed;
+      bottom: 84px;
+      right: max(14px, calc(50% - 226px));
+      width: min(330px, calc(100vw - 28px));
+      max-height: 410px;
+      background: #fff;
+      border-radius: 22px;
+      box-shadow: 0 20px 48px rgba(6, 78, 59, 0.28);
+      border: 1.5px solid rgba(217, 119, 6, 0.35);
+      z-index: 95;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: luxEnter 0.3s var(--ease-bounce);
+    }
+    .chat-popup-head {
+      background: linear-gradient(135deg, var(--emerald-deep), var(--teal-lux));
+      color: #fff;
+      padding: 12px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .chat-messages {
+      padding: 12px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+      background: #f8fafc;
+      max-height: 255px;
+    }
+    .msg-item {
+      max-width: 85%;
+      padding: 9px 12px;
+      border-radius: 14px;
+      font-size: 12.5px;
+      line-height: 1.45;
+    }
+    .msg-santri {
+      align-self: flex-end;
+      background: var(--emerald-deep);
+      color: #fff;
+      border-bottom-right-radius: 4px;
+    }
+    .msg-ustadz {
+      align-self: flex-start;
+      background: var(--gold-soft);
+      color: #451a03;
+      border: 1px solid rgba(217, 119, 6, 0.3);
+      border-bottom-left-radius: 4px;
+    }
+    .chat-popup-foot {
+      display: flex;
+      gap: 6px;
+      padding: 10px;
+      background: #fff;
       border-top: 1px solid var(--border);
+    }
+
+    /* Sticky Bottom Navigation */
+    .sticky-footer {
+      position: sticky;
+      bottom: 0;
+      z-index: 60;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(14px);
+      border-top: 1px solid #e2e8f0;
       display: flex;
       justify-content: space-around;
       padding: 10px 6px 12px;
-      z-index: 50;
+      box-shadow: 0 -8px 24px rgba(6, 78, 59, 0.08);
     }
     .nav-item {
       border: none;
@@ -360,8 +530,12 @@
       font-weight: 700;
       color: var(--muted);
       cursor: pointer;
+      transition: color 0.2s ease, transform 0.2s var(--ease-bounce);
     }
-    .nav-item.active { color: var(--primary); }
+    .nav-item.active {
+      color: var(--emerald-mid);
+      transform: translateY(-2px);
+    }
     .nav-item span.ico { font-size: 20px; }
 
     .toast {
@@ -369,15 +543,16 @@
       top: 18px;
       left: 50%;
       transform: translateX(-50%);
-      background: #0f172a;
-      color: #fff;
+      background: #062e24;
+      color: #fef3c7;
+      border: 1px solid rgba(245, 158, 11, 0.45);
       padding: 11px 18px;
       border-radius: 99px;
       font-size: 12.5px;
       font-weight: 600;
-      z-index: 999;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-      animation: pageEnter 0.25s ease;
+      z-index: 300;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.25);
+      animation: luxEnter 0.28s var(--ease-lux);
     }
     .badge-status {
       display: inline-block;
@@ -391,20 +566,27 @@
   </style>
 </head>
 <body>
-  <div class="app-shell">
+  <div class="app-shell" id="app-shell">
     <div id="toast" class="toast hidden"></div>
+
+    <!-- OVERLAY ANIMASI TRANSISI LOGIN -> APP -->
+    <div id="entry-transition" class="entry-overlay hidden">
+      <div class="lux-spinner"></div>
+      <div class="arab-display" style="font-size:24px; color:#fef3c7;">أَهْلًا وَسَهْلًا بِطَالِبِ الْعِلْمِ</div>
+      <p id="entry-status-text" style="font-size:13px; opacity:0.92;">Menyiapkan ruang belajar Amtsilati...</p>
+    </div>
 
     <!-- ==================== 1. HALAMAN LOGIN & REGISTRASI ==================== -->
     <div id="view-auth" class="screen">
       <div class="auth-hero">
-        <div class="brand-badge">📖 AMTSILATI DIGITAL PWA</div>
-        <h1 style="font-size:24px; font-weight:800; line-height:1.25;">Belajar Baca Kitab Kuning Jadi Mudah & Cepat</h1>
-        <p style="font-size:13px; opacity:0.9; margin-top:6px;">Metode Praktis Penguasaan Qoidah, Jilid 1–2 & Tatimmah</p>
+        <div class="brand-badge arab-display">📖 طَرِيْقَةُ أَمْثِلَاتِي</div>
+        <h1 class="arab-display" style="font-size:27px; font-weight:700; line-height:1.3; color:#fef3c7;">Belajar Baca Kitab Kuning Jadi Mudah & Cepat</h1>
+        <p style="font-size:13px; opacity:0.92; margin-top:6px;">Penguasaan Rumus Qoidah, Kitab Jilid 1–2 & Resep Tatimmah</p>
       </div>
 
       <!-- FORM LOGIN -->
       <div id="box-login" class="auth-card stagger-1">
-        <h3 style="font-size:18px; font-weight:800; margin-bottom:4px;">Masuk Akun</h3>
+        <h3 class="arab-display" style="font-size:21px; font-weight:700; margin-bottom:4px; color:var(--emerald-deep);">Masuk Akun</h3>
         <p style="font-size:12px; color:var(--muted); margin-bottom:16px;">Gunakan NIS (Santri / Ustadz) dan Password</p>
 
         <div class="form-group">
@@ -424,7 +606,7 @@
 
       <!-- FORM REGISTRASI SANTRI -->
       <div id="box-register" class="auth-card hidden stagger-1">
-        <h3 style="font-size:18px; font-weight:800; margin-bottom:4px;">Registrasi Santri Baru</h3>
+        <h3 class="arab-display" style="font-size:21px; font-weight:700; margin-bottom:4px; color:var(--emerald-deep);">Registrasi Santri Baru</h3>
         <p style="font-size:12px; color:var(--muted); margin-bottom:14px;">Semua kolom wajib diisi & menunggu persetujuan (ACC) Ustadz.</p>
 
         <div class="form-group">
@@ -474,162 +656,194 @@
 
     <!-- ==================== 2. APLIKASI UTAMA (SANTRI & USTADZ) ==================== -->
     <div id="view-app" class="hidden">
-      <div class="home-header">
+      <!-- STICKY HEADER -->
+      <header class="sticky-header">
         <div class="top-row">
           <div>
-            <span class="role-pill" id="ui-role-badge">SANTRI AMTSILATI</span>
-            <h2 id="ui-user-name" style="font-size:19px; font-weight:800; margin-top:6px;">Assalamu'alaikum</h2>
-            <p id="ui-user-meta" style="font-size:12px; opacity:0.9;">NIS: - • Kelas: -</p>
+            <span class="role-pill arab-display" id="ui-role-badge">طَالِبُ أَمْثِلَاتِي</span>
+            <h2 id="ui-user-name" class="arab-display" style="font-size:21px; font-weight:700; margin-top:4px; color:#fef3c7;">Assalamu'alaikum</h2>
+            <p id="ui-user-meta" style="font-size:11.5px; opacity:0.92;">NIS: - • Kelas: -</p>
           </div>
-          <button id="btn-install-pwa" class="btn-press hidden" onclick="installPWA()" style="background:#fff; color:#0284c7; border:none; padding:8px 12px; border-radius:12px; font-weight:800; font-size:11px;">📲 Install App</button>
+          <button id="btn-install-pwa" class="btn-press hidden" onclick="installPWA()" style="background:#fef3c7; color:#064e3b; border:none; padding:8px 12px; border-radius:12px; font-weight:800; font-size:11px;">📲 Install App</button>
         </div>
-      </div>
+      </header>
 
-      <!-- TAB 1: BERANDA -->
-      <div id="tab-home" class="screen">
-        <div class="hero-progress stagger-1">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span style="font-size:12px; font-weight:800; color:var(--primary);">🎯 TARGET KHATAM AMTSILATI</span>
-            <span id="ui-progress-pct" style="font-size:13px; font-weight:800; color:var(--success);">0%</span>
-          </div>
-          <div class="progress-track">
-            <div id="ui-progress-bar" class="progress-fill" style="width: 0%;"></div>
-          </div>
-          <p id="ui-progress-text" style="font-size:11.5px; color:var(--muted);">Selesaikan Rumus Qoidah terlebih dahulu sebelum masuk Jilid 1–2.</p>
-        </div>
-
-        <div class="section-title stagger-2">
-          <span>Kurikulum Metode Amtsilati</span>
-          <span style="font-size:11px; color:var(--primary);">Interaktif</span>
-        </div>
-
-        <div class="subject-grid stagger-2">
-          <div class="subject-card btn-press" onclick="openCategory('rumus_qoidah')">
-            <div class="subject-icon" style="background:#e0f2fe; color:#0284c7;">🧭</div>
-            <h4>Rumus Qoidah</h4>
-            <p>Rumus wajib dikuasai sebelum merangkul Jilid 1–6</p>
-          </div>
-          <div class="subject-card btn-press" onclick="openCategory('jilid_1')">
-            <div class="subject-icon" style="background:#ccfbf1; color:#0d9488;">📘</div>
-            <h4>Kitab Jilid 1</h4>
-            <p>Kelas dasar pengenalan Isim, Huruf Jar & tanda baca</p>
-          </div>
-          <div class="subject-card btn-press" onclick="openCategory('jilid_2')">
-            <div class="subject-icon" style="background:#fef3c7; color:#d97706;">📙</div>
-            <h4>Kitab Jilid 2</h4>
-            <p>Kelas lanjutan Dhomir, Isim Isyarah & Maushul</p>
-          </div>
-          <div class="subject-card btn-press" onclick="openCategory('tatimmah')">
-            <div class="subject-icon" style="background:#fce7f3; color:#db2777;">🧪</div>
-            <h4>Tatimmah</h4>
-            <p>Resep praktis penerapan jilid ke teks kitab gundul</p>
-          </div>
-        </div>
-
-        <div id="ustadz-quick-banner" class="card-box hidden stagger-3" style="border:1.5px solid #0284c7;">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <div>
-              <h4 style="font-size:14px; font-weight:800; color:var(--primary);">🛡️ Panel Persetujuan Ustadz</h4>
-              <p id="pending-count-text" style="font-size:12px; color:var(--muted); margin-top:2px;">Memeriksa pendaftaran santri baru...</p>
+      <div class="main-body" id="main-body">
+        <!-- TAB 1: BERANDA -->
+        <div id="tab-home" class="screen">
+          <div class="hero-progress stagger-1">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="arab-display" style="font-size:15px; font-weight:700; color:var(--emerald-deep);">🎯 TARGET KHATAM AMTSILATI</span>
+              <span id="ui-progress-pct" style="font-size:13px; font-weight:800; color:var(--gold-lux);">0%</span>
             </div>
-            <button class="btn-press" onclick="switchTab('ustadz')" style="background:var(--primary); color:#fff; border:none; padding:8px 14px; border-radius:12px; font-weight:700; font-size:12px;">Kelola</button>
+            <div class="progress-track">
+              <div id="ui-progress-bar" class="progress-fill" style="width: 0%;"></div>
+            </div>
+            <p id="ui-progress-text" style="font-size:11.5px; color:var(--muted);">Selesaikan Rumus Qoidah terlebih dahulu sebelum masuk Jilid 1–2.</p>
+          </div>
+
+          <div class="section-title stagger-2">
+            <span class="arab-display">Kurikulum Metode Amtsilati</span>
+            <span style="font-size:11px; font-weight:700; color:var(--gold-lux);">Interaktif</span>
+          </div>
+
+          <div class="subject-grid stagger-2">
+            <div class="subject-card btn-press" onclick="openCategory('rumus_qoidah')">
+              <div class="subject-icon" style="background:#d1fae5; color:#065f46;">🧭</div>
+              <h4 class="arab-display">Rumus Qoidah</h4>
+              <p>Rumus wajib dikuasai sebelum merangkul Jilid 1–6</p>
+            </div>
+            <div class="subject-card btn-press" onclick="openCategory('jilid_1')">
+              <div class="subject-icon" style="background:#fef3c7; color:#b45309;">📘</div>
+              <h4 class="arab-display">Kitab Jilid 1</h4>
+              <p>Kelas dasar pengenalan Isim, Huruf Jar & tanda baca</p>
+            </div>
+            <div class="subject-card btn-press" onclick="openCategory('jilid_2')">
+              <div class="subject-icon" style="background:#ccfbf1; color:#0f766e;">📙</div>
+              <h4 class="arab-display">Kitab Jilid 2</h4>
+              <p>Kelas lanjutan Dhomir, Isim Isyarah & Maushul</p>
+            </div>
+            <div class="subject-card btn-press" onclick="openCategory('tatimmah')">
+              <div class="subject-icon" style="background:#fde68a; color:#92400e;">🧪</div>
+              <h4 class="arab-display">Tatimmah</h4>
+              <p>Resep praktis penerapan jilid ke teks kitab gundul</p>
+            </div>
+          </div>
+
+          <div id="ustadz-quick-banner" class="card-box hidden stagger-3" style="border:1.5px solid rgba(217,119,6,0.4);">
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+              <div>
+                <h4 class="arab-display" style="font-size:16px; font-weight:700; color:var(--emerald-deep);">🛡️ Panel Persetujuan Ustadz</h4>
+                <p id="pending-count-text" style="font-size:12px; color:var(--muted); margin-top:2px;">Memeriksa pendaftaran santri baru...</p>
+              </div>
+              <button class="btn-press" onclick="switchTab('ustadz')" style="background:var(--emerald-deep); color:#fef3c7; border:none; padding:8px 14px; border-radius:12px; font-weight:700; font-size:12px;">Kelola</button>
+            </div>
+          </div>
+
+          <div class="section-title stagger-3">
+            <span id="active-cat-title" class="arab-display">Semua Materi Pilihan</span>
+          </div>
+          <div id="module-list" class="stagger-4"></div>
+        </div>
+
+        <!-- TAB 2: RUANG BELAJAR INTERAKTIF -->
+        <div id="tab-learn" class="screen hidden">
+          <div class="card-box">
+            <button class="btn-press" onclick="switchTab('home')" style="background:#f1f5f9; border:none; padding:6px 12px; border-radius:10px; font-size:12px; font-weight:700; margin-bottom:10px;">← Kembali ke Kurikulum</button>
+            <span id="learn-cat-badge" class="badge-status badge-approved">RUMUS QOIDAH</span>
+            <h3 id="learn-title" class="arab-display" style="font-size:21px; font-weight:700; margin-top:8px; color:var(--emerald-deep);">Judul Materi</h3>
+            <p id="learn-sub" style="font-size:12px; color:var(--muted); margin-bottom:12px;">Subjudul</p>
+            <p id="learn-summary" style="font-size:13.5px; line-height:1.65; color:#334155;"></p>
+
+            <div class="arab-stage">
+              <div style="font-size:11px; font-weight:700; color:var(--emerald-deep); margin-bottom:8px;">✨ KLIK SETIAP KATA ARAB UNTUK MEMBEDAH RUMUSNYA</div>
+              <div id="learn-arab-words" class="arabic"></div>
+              <div id="learn-bedah-detail" class="bedah-panel hidden"></div>
+            </div>
+
+            <div id="learn-tatimmah" class="tatimmah-box"></div>
+
+            <button id="btn-complete-module" class="btn-primary btn-press" style="margin-top:16px;" onclick="markModuleComplete()">✅ Tandai Paham & Lanjut Latihan</button>
           </div>
         </div>
 
-        <div class="section-title stagger-3">
-          <span id="active-cat-title">Semua Materi Pilihan</span>
+        <!-- TAB 3: LATIHAN INTERAKTIF -->
+        <div id="tab-quiz" class="screen hidden">
+          <div class="card-box">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+              <span class="arab-display" style="font-size:15px; font-weight:700; color:var(--emerald-deep);">⚡ UJI PEMAHAMAN QOIDAH</span>
+              <select id="quiz-filter" class="form-select" style="width:auto; padding:6px 10px; font-size:12px;" onchange="renderQuiz()">
+                <option value="all">Semua Materi</option>
+                <option value="rumus_qoidah">Rumus Qoidah</option>
+                <option value="jilid_1">Jilid 1</option>
+                <option value="jilid_2">Jilid 2</option>
+                <option value="tatimmah">Tatimmah</option>
+              </select>
+            </div>
+            <div id="quiz-container"></div>
+          </div>
         </div>
-        <div id="module-list" class="stagger-4"></div>
+
+        <!-- TAB 4: SESI USTADZ -->
+        <div id="tab-ustadz" class="screen hidden">
+          <div class="card-box">
+            <h3 class="arab-display" style="font-size:18px; font-weight:700; margin-bottom:4px; color:var(--emerald-deep);">📋 Persetujuan Registrasi Santri</h3>
+            <p style="font-size:12px; color:var(--muted); margin-bottom:12px;">Santri baru hanya bisa login setelah Anda tekan tombol ACC.</p>
+            <div id="ustadz-santri-list"></div>
+          </div>
+
+          <div class="card-box">
+            <h3 class="arab-display" style="font-size:18px; font-weight:700; margin-bottom:4px; color:var(--emerald-deep);">💬 Su'alun lil-Ustadz (Tanya Jawab Santri)</h3>
+            <p style="font-size:12px; color:var(--muted); margin-bottom:12px;">Hanya Ustadz yang dapat menghapus pesan santri maupun balasan sendiri.</p>
+            <div id="ustadz-chat-list"></div>
+          </div>
+
+          <div class="card-box">
+            <h3 class="arab-display" style="font-size:18px; font-weight:700; margin-bottom:4px; color:var(--emerald-deep);">➕ Tambah Materi Amtsilati Baru</h3>
+            <p style="font-size:12px; color:var(--muted); margin-bottom:12px;">Materi langsung tampil di aplikasi seluruh santri.</p>
+            <div class="form-group">
+              <label class="form-label">Kategori Kurikulum</label>
+              <select id="new-mod-cat" class="form-select">
+                <option value="rumus_qoidah">Rumus Qoidah</option>
+                <option value="jilid_1">Jilid 1</option>
+                <option value="jilid_2">Jilid 2</option>
+                <option value="tatimmah">Tatimmah</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Judul Bab / Pelajaran</label>
+              <input type="text" id="new-mod-title" class="form-input" placeholder="Misal: Jilid 1 - Bab 2: Tanda-tanda Isim" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Penjelasan Qoidah</label>
+              <textarea id="new-mod-summary" class="form-input" rows="3" placeholder="Tuliskan penjelasan ringkas dan mudah dipahami anak SD..."></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Contoh Lafadz Arab</label>
+              <input type="text" id="new-mod-arab" class="form-input arabic" placeholder="اَلْحَمْدُ لِلّٰهِ رَبِّ الْعَالَمِيْنَ" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Resep Tatimmah / Kunci Cepat</label>
+              <input type="text" id="new-mod-tatimmah" class="form-input" placeholder="Tips cepat membaca contoh di atas..." />
+            </div>
+            <button class="btn-primary btn-press" onclick="addNewModule()">Simpan Materi ke Database</button>
+          </div>
+        </div>
+
+        <!-- TAB 5: PROFIL -->
+        <div id="tab-profile" class="screen hidden">
+          <div class="card-box">
+            <h3 class="arab-display" style="font-size:18px; font-weight:700; margin-bottom:12px; color:var(--emerald-deep);">🪪 Kartu Identitas Digital</h3>
+            <div id="profile-details" style="font-size:13px; line-height:2;"></div>
+            <button class="btn-press" onclick="logout()" style="width:100%; margin-top:16px; padding:12px; border:none; border-radius:14px; background:#fee2e2; color:#b91c1c; font-weight:800;">Keluar Akun (Logout)</button>
+          </div>
+        </div>
       </div>
 
-      <!-- TAB 2: RUANG BELAJAR INTERAKTIF -->
-      <div id="tab-learn" class="screen hidden">
-        <div class="card-box">
-          <button class="btn-press" onclick="switchTab('home')" style="background:#f1f5f9; border:none; padding:6px 12px; border-radius:10px; font-size:12px; font-weight:700; margin-bottom:10px;">← Kembali ke Kurikulum</button>
-          <span id="learn-cat-badge" class="badge-status badge-approved">RUMUS QOIDAH</span>
-          <h3 id="learn-title" style="font-size:18px; font-weight:800; margin-top:8px;">Judul Materi</h3>
-          <p id="learn-sub" style="font-size:12px; color:var(--muted); margin-bottom:12px;">Subjudul</p>
-          <p id="learn-summary" style="font-size:13.5px; line-height:1.65; color:#334155;"></p>
+      <!-- BUBBLE MELAYANG "SU'ALUN LIL-USTADZ" (KHUSUS SESI SANTRI) -->
+      <button id="btn-ask-bubble" class="ask-bubble btn-press hidden" onclick="toggleAskPopup()">
+        <span>💬</span>
+        <span class="arab-display" style="font-size:15px;">Su'alun Ustadz</span>
+      </button>
 
-          <div class="arab-stage">
-            <div style="font-size:11px; font-weight:700; color:var(--primary); margin-bottom:8px;">✨ KLIK SETIAP KATA ARAB UNTUK MEMBEDAH RUMUSNYA</div>
-            <div id="learn-arab-words" class="arabic"></div>
-            <div id="learn-bedah-detail" class="bedah-panel hidden"></div>
+      <!-- POPUP CHAT KECIL ALA MESSENGER -->
+      <div id="ask-popup" class="chat-popup hidden">
+        <div class="chat-popup-head">
+          <div>
+            <div class="arab-display" style="font-size:16px; font-weight:700; color:#fef3c7;">Su'alun lil-Ustadz</div>
+            <div style="font-size:10.5px; opacity:0.88;">Pesan terkirim tidak dapat dihapus santri</div>
           </div>
-
-          <div id="learn-tatimmah" class="tatimmah-box"></div>
-
-          <button id="btn-complete-module" class="btn-primary btn-press" style="margin-top:16px;" onclick="markModuleComplete()">✅ Tandai Paham & Lanjut Latihan</button>
+          <button class="btn-press" onclick="toggleAskPopup()" style="background:rgba(255,255,255,0.2); color:#fff; border:none; width:26px; height:26px; border-radius:50%; font-weight:700;">✕</button>
+        </div>
+        <div id="santri-chat-messages" class="chat-messages"></div>
+        <div class="chat-popup-foot">
+          <input type="text" id="santri-chat-input" class="form-input" style="padding:9px 12px; font-size:12.5px;" placeholder="Tulis pertanyaan qoidah..." />
+          <button class="btn-press" onclick="sendSantriQuestion()" style="background:var(--emerald-deep); color:#fef3c7; border:none; padding:0 13px; border-radius:12px; font-weight:700; font-size:12px;">Kirim</button>
         </div>
       </div>
 
-      <!-- TAB 3: LATIHAN INTERAKTIF -->
-      <div id="tab-quiz" class="screen hidden">
-        <div class="card-box">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-            <span style="font-size:12px; font-weight:800; color:var(--primary);">⚡ UJI PEMAHAMAN QOIDAH</span>
-            <select id="quiz-filter" class="form-select" style="width:auto; padding:6px 10px; font-size:12px;" onchange="renderQuiz()">
-              <option value="all">Semua Materi</option>
-              <option value="rumus_qoidah">Rumus Qoidah</option>
-              <option value="jilid_1">Jilid 1</option>
-              <option value="jilid_2">Jilid 2</option>
-              <option value="tatimmah">Tatimmah</option>
-            </select>
-          </div>
-          <div id="quiz-container"></div>
-        </div>
-      </div>
-
-      <!-- TAB 4: SESI USTADZ -->
-      <div id="tab-ustadz" class="screen hidden">
-        <div class="card-box">
-          <h3 style="font-size:16px; font-weight:800; margin-bottom:4px;">📋 Persetujuan Registrasi Santri</h3>
-          <p style="font-size:12px; color:var(--muted); margin-bottom:12px;">Santri baru hanya bisa login setelah Anda tekan tombol ACC.</p>
-          <div id="ustadz-santri-list"></div>
-        </div>
-
-        <div class="card-box">
-          <h3 style="font-size:16px; font-weight:800; margin-bottom:4px;">➕ Tambah Materi Amtsilati Baru</h3>
-          <p style="font-size:12px; color:var(--muted); margin-bottom:12px;">Materi langsung tampil di aplikasi seluruh santri.</p>
-          <div class="form-group">
-            <label class="form-label">Kategori Kurikulum</label>
-            <select id="new-mod-cat" class="form-select">
-              <option value="rumus_qoidah">Rumus Qoidah</option>
-              <option value="jilid_1">Jilid 1</option>
-              <option value="jilid_2">Jilid 2</option>
-              <option value="tatimmah">Tatimmah</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Judul Bab / Pelajaran</label>
-            <input type="text" id="new-mod-title" class="form-input" placeholder="Misal: Jilid 1 - Bab 2: Tanda-tanda Isim" />
-          </div>
-          <div class="form-group">
-            <label class="form-label">Penjelasan Qoidah</label>
-            <textarea id="new-mod-summary" class="form-input" rows="3" placeholder="Tuliskan penjelasan ringkas dan mudah dipahami anak SD..."></textarea>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Contoh Lafadz Arab</label>
-            <input type="text" id="new-mod-arab" class="form-input arabic" placeholder="اَلْحَمْدُ لِلّٰهِ رَبِّ الْعَالَمِيْنَ" />
-          </div>
-          <div class="form-group">
-            <label class="form-label">Resep Tatimmah / Kunci Cepat</label>
-            <input type="text" id="new-mod-tatimmah" class="form-input" placeholder="Tips cepat membaca contoh di atas..." />
-          </div>
-          <button class="btn-primary btn-press" onclick="addNewModule()">Simpan Materi ke Database</button>
-        </div>
-      </div>
-
-      <!-- TAB 5: PROFIL -->
-      <div id="tab-profile" class="screen hidden">
-        <div class="card-box">
-          <h3 style="font-size:16px; font-weight:800; margin-bottom:12px;">🪪 Kartu Identitas Digital</h3>
-          <div id="profile-details" style="font-size:13px; line-height:2;"></div>
-          <button class="btn-press" onclick="logout()" style="width:100%; margin-top:16px; padding:12px; border:none; border-radius:14px; background:#fee2e2; color:#b91c1c; font-weight:800;">Keluar Akun (Logout)</button>
-        </div>
-      </div>
-
-      <nav class="bottom-nav">
+      <!-- STICKY FOOTER -->
+      <nav class="sticky-footer">
         <button class="nav-item active" id="nav-home" onclick="switchTab('home')">
           <span class="ico">🏠</span><span>Beranda</span>
         </button>
@@ -725,8 +939,15 @@
     let modulesData = [];
     let quizzesData = [];
     let completedIds = [];
+    let chatsData = [];
     let activeModule = null;
     let activeCategoryFilter = 'all';
+
+    function smoothScrollTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      const shell = document.getElementById('app-shell');
+      if (shell) shell.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
     function showToast(msg) {
       const el = document.getElementById('toast');
@@ -737,8 +958,22 @@
     }
 
     function toggleAuthMode(mode) {
-      document.getElementById('box-login').classList.toggle('hidden', mode !== 'login');
-      document.getElementById('box-register').classList.toggle('hidden', mode !== 'register');
+      const loginBox = document.getElementById('box-login');
+      const regBox = document.getElementById('box-register');
+      if (mode === 'register') {
+        loginBox.classList.add('hidden');
+        regBox.classList.remove('hidden');
+        regBox.classList.remove('stagger-1');
+        void regBox.offsetWidth;
+        regBox.classList.add('stagger-1');
+      } else {
+        regBox.classList.add('hidden');
+        loginBox.classList.remove('hidden');
+        loginBox.classList.remove('stagger-1');
+        void loginBox.offsetWidth;
+        loginBox.classList.add('stagger-1');
+      }
+      smoothScrollTop();
     }
 
     function checkPasswordRules(pwd) {
@@ -807,6 +1042,24 @@
       document.getElementById('login-nis').value = nis;
     }
 
+    function playEntryTransition(userName, callback) {
+      const overlay = document.getElementById('entry-transition');
+      const statusText = document.getElementById('entry-status-text');
+      statusText.textContent = `Ahlan wa sahlan, ${userName}...`;
+      overlay.classList.remove('fade-out', 'hidden');
+
+      setTimeout(async () => {
+        statusText.textContent = 'Menyiapkan qoidah, kitab & modul interaktif...';
+        await callback();
+        overlay.classList.add('fade-out');
+        setTimeout(() => {
+          overlay.classList.add('hidden');
+          overlay.classList.remove('fade-out');
+          smoothScrollTop();
+        }, 440);
+      }, 650);
+    }
+
     async function handleLogin() {
       const nis = document.getElementById('login-nis').value.trim();
       const pass = document.getElementById('login-pass').value.trim();
@@ -843,14 +1096,26 @@
 
       currentUser = user;
       localStorage.setItem('amtsilati_session', JSON.stringify(user));
-      initApp();
+
+      playEntryTransition(user.nama_lengkap, async () => {
+        await initApp();
+      });
     }
 
     function logout() {
-      localStorage.removeItem('amtsilati_session');
-      currentUser = null;
-      document.getElementById('view-app').classList.add('hidden');
-      document.getElementById('view-auth').classList.remove('hidden');
+      const authView = document.getElementById('view-auth');
+      const appView = document.getElementById('view-app');
+      document.getElementById('ask-popup').classList.add('hidden');
+      appView.classList.add('screen-exit');
+
+      setTimeout(() => {
+        localStorage.removeItem('amtsilati_session');
+        currentUser = null;
+        appView.classList.add('hidden');
+        appView.classList.remove('screen-exit');
+        authView.classList.remove('hidden');
+        smoothScrollTop();
+      }, 300);
     }
 
     async function initApp() {
@@ -858,12 +1123,13 @@
       document.getElementById('view-app').classList.remove('hidden');
 
       const isUstadz = currentUser.role === 'ustadz';
-      document.getElementById('ui-role-badge').textContent = isUstadz ? '🛡️ SESI USTADZ PENGAMPU' : '🎓 SESI SANTRI AMTSILATI';
+      document.getElementById('ui-role-badge').textContent = isUstadz ? '🛡️ USTADZ PENGAMPU' : '🎓 THOLIB AMTSILATI';
       document.getElementById('ui-user-name').textContent = currentUser.nama_lengkap;
       document.getElementById('ui-user-meta').textContent = `NIS: ${currentUser.nis} • Kelas: ${currentUser.kelas}`;
 
       document.getElementById('nav-ustadz').classList.toggle('hidden', !isUstadz);
       document.getElementById('ustadz-quick-banner').classList.toggle('hidden', !isUstadz);
+      document.getElementById('btn-ask-bubble').classList.toggle('hidden', isUstadz);
 
       document.getElementById('profile-details').innerHTML = `
         <div><strong>NIS:</strong> ${currentUser.nis}</div>
@@ -875,6 +1141,7 @@
       `;
 
       await loadContentData();
+      await loadChatsData();
       if (isUstadz) await loadUstadzDashboard();
       switchTab('home');
     }
@@ -939,7 +1206,7 @@
           <div class="card-box btn-press" onclick="openModuleDetail('${m.id}')" style="display:flex; justify-content:space-between; align-items:center; gap:12px;">
             <div>
               <span class="badge-status ${isDone ? 'badge-approved' : 'badge-pending'}">${m.kategori.replace('_', ' ').toUpperCase()}</span>
-              <h4 style="font-size:14px; font-weight:800; margin-top:6px;">${m.judul}</h4>
+              <h4 class="arab-display" style="font-size:17px; font-weight:700; margin-top:6px; color:var(--emerald-deep);">${m.judul}</h4>
               <p style="font-size:12px; color:var(--muted); margin-top:2px;">${m.subjudul || ''}</p>
             </div>
             <div style="font-size:20px;">${isDone ? '✅' : '➡️'}</div>
@@ -982,9 +1249,9 @@
       const detailEl = document.getElementById('learn-bedah-detail');
       detailEl.classList.remove('hidden');
       detailEl.innerHTML = `
-        <div style="font-size:11px; color:#38bdf8; font-weight:700;">BEDAH LAFADZ AMTSILATI</div>
+        <div style="font-size:11px; color:#fbbf24; font-weight:700;">BEDAH LAFADZ AMTSILATI</div>
         <div style="font-size:15px; font-weight:800; margin:4px 0;">Arti: "${item.arti}"</div>
-        <div style="font-size:12.5px; color:#e2e8f0;">📌 <strong>Rumus Qoidah:</strong> ${item.rumus}</div>
+        <div style="font-size:12.5px; color:#ecfdf5;">📌 <strong>Rumus Qoidah:</strong> ${item.rumus}</div>
       `;
     }
 
@@ -1016,7 +1283,7 @@
 
       container.innerHTML = list.map((q, idx) => `
         <div style="padding-bottom:16px; margin-bottom:16px; border-bottom:1px solid var(--border);">
-          <div style="font-size:12px; font-weight:800; color:var(--primary); margin-bottom:4px;">Soal #${idx + 1} (${q.kategori.replace('_', ' ').toUpperCase()})</div>
+          <div style="font-size:12px; font-weight:800; color:var(--emerald-mid); margin-bottom:4px;">Soal #${idx + 1} (${q.kategori.replace('_', ' ').toUpperCase()})</div>
           <p style="font-size:13.5px; font-weight:700; margin-bottom:8px;">${q.pertanyaan}</p>
           ${q.teks_arab ? `<div class="arabic" style="font-size:24px; text-align:center; background:#f8fafc; padding:10px; border-radius:12px; margin-bottom:10px;">${q.teks_arab}</div>` : ''}
           ${['A', 'B', 'C', 'D'].map(opt => `
@@ -1042,6 +1309,149 @@
       document.getElementById('explain-' + qId).classList.remove('hidden');
     }
 
+    // ==================== FITUR SU'ALUN LIL-USTADZ (POPUP SANTRI & HAPUS KHUSUS USTADZ) ====================
+    function toggleAskPopup() {
+      const popup = document.getElementById('ask-popup');
+      popup.classList.toggle('hidden');
+      if (!popup.classList.contains('hidden')) {
+        renderSantriChat();
+      }
+    }
+
+    async function loadChatsData() {
+      if (sb) {
+        const { data } = await sb.from('amtsilati_chats').select('*').order('created_at', { ascending: true });
+        chatsData = data || [];
+      } else {
+        chatsData = JSON.parse(localStorage.getItem('amtsilati_chats') || '[]');
+      }
+      renderSantriChat();
+      if (currentUser && currentUser.role === 'ustadz') {
+        renderUstadzChats();
+      }
+    }
+
+    function renderSantriChat() {
+      if (!currentUser) return;
+      const box = document.getElementById('santri-chat-messages');
+      const myChats = chatsData.filter(c => c.santri_nis === currentUser.nis);
+      if (!myChats.length) {
+        box.innerHTML = `<div style="text-align:center; font-size:12px; color:var(--muted); padding:20px 8px;">Belum ada pertanyaan. Silakan tanya rumus atau kitab kepada Ustadz.</div>`;
+        return;
+      }
+      box.innerHTML = myChats.map(c => `
+        <div class="msg-item ${c.pengirim_role === 'ustadz' ? 'msg-ustadz' : 'msg-santri'}">
+          <div style="font-size:10px; opacity:0.75; font-weight:700; margin-bottom:2px;">${c.pengirim_role === 'ustadz' ? 'Ustadz' : 'Anda'}</div>
+          <div>${c.pesan}</div>
+        </div>
+      `).join('');
+      box.scrollTop = box.scrollHeight;
+    }
+
+    async function sendSantriQuestion() {
+      const input = document.getElementById('santri-chat-input');
+      const pesan = input.value.trim();
+      if (!pesan || !currentUser) return;
+
+      const row = {
+        id: 'chat_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+        santri_nis: currentUser.nis,
+        santri_nama: currentUser.nama_lengkap,
+        pengirim_role: 'santri',
+        pesan
+      };
+
+      if (sb) {
+        const { data, error } = await sb.from('amtsilati_chats').insert([{
+          santri_nis: row.santri_nis,
+          santri_nama: row.santri_nama,
+          pengirim_role: 'santri',
+          pesan: row.pesan
+        }]).select();
+        if (error) return showToast('❌ Gagal mengirim pesan: ' + error.message);
+        if (data && data[0]) row.id = data[0].id;
+      } else {
+        const list = JSON.parse(localStorage.getItem('amtsilati_chats') || '[]');
+        list.push(row);
+        localStorage.setItem('amtsilati_chats', JSON.stringify(list));
+      }
+
+      input.value = '';
+      await loadChatsData();
+      showToast('📩 Pertanyaan terkirim ke Ustadz.');
+    }
+
+    function renderUstadzChats() {
+      const box = document.getElementById('ustadz-chat-list');
+      if (!box) return;
+      if (!chatsData.length) {
+        box.innerHTML = `<p style="font-size:12.5px; color:var(--muted);">Belum ada chat dari santri.</p>`;
+        return;
+      }
+      box.innerHTML = chatsData.map(c => `
+        <div style="border:1px solid var(--border); border-radius:14px; padding:11px; margin-bottom:9px; background:#f8fafc;">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+            <span style="font-size:11.5px; font-weight:800; color:var(--emerald-deep);">
+              ${c.pengirim_role === 'ustadz' ? '🛡️ Ustadz → ' + c.santri_nama : '🎓 ' + c.santri_nama + ' (' + c.santri_nis + ')'}
+            </span>
+            <button class="btn-press" onclick="deleteChatByUstadz('${c.id}')" style="background:#fee2e2; color:#b91c1c; border:none; padding:4px 9px; border-radius:8px; font-size:11px; font-weight:700;">Hapus</button>
+          </div>
+          <p style="font-size:13px; margin:6px 0 8px; color:var(--text);">${c.pesan}</p>
+          ${c.pengirim_role === 'santri' ? `
+            <div style="display:flex; gap:6px;">
+              <input type="text" id="reply-input-${c.id}" class="form-input" style="padding:7px 10px; font-size:12px;" placeholder="Balas pertanyaan santri..." />
+              <button class="btn-press" onclick="replyChatByUstadz('${c.id}', '${c.santri_nis}', '${c.santri_nama.replace(/'/g, "\\'")}')" style="background:var(--emerald-deep); color:#fef3c7; border:none; padding:0 11px; border-radius:10px; font-size:11.5px; font-weight:700;">Balas</button>
+            </div>
+          ` : ''}
+        </div>
+      `).join('');
+    }
+
+    async function replyChatByUstadz(refId, santriNis, santriNama) {
+      const inp = document.getElementById('reply-input-' + refId);
+      const balasan = inp ? inp.value.trim() : '';
+      if (!balasan) return showToast('⚠️ Tulis balasan terlebih dahulu.');
+
+      const row = {
+        id: 'chat_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+        santri_nis: santriNis,
+        santri_nama: santriNama,
+        pengirim_role: 'ustadz',
+        pesan: balasan
+      };
+
+      if (sb) {
+        const { error } = await sb.from('amtsilati_chats').insert([{
+          santri_nis: row.santri_nis,
+          santri_nama: row.santri_nama,
+          pengirim_role: 'ustadz',
+          pesan: row.pesan
+        }]);
+        if (error) return showToast('❌ Gagal membalas: ' + error.message);
+      } else {
+        const list = JSON.parse(localStorage.getItem('amtsilati_chats') || '[]');
+        list.push(row);
+        localStorage.setItem('amtsilati_chats', JSON.stringify(list));
+      }
+
+      showToast('✅ Balasan terkirim ke santri.');
+      await loadChatsData();
+    }
+
+    async function deleteChatByUstadz(chatId) {
+      if (!currentUser || currentUser.role !== 'ustadz') return;
+      if (sb) {
+        const { error } = await sb.from('amtsilati_chats').delete().eq('id', chatId);
+        if (error) return showToast('❌ Gagal menghapus pesan: ' + error.message);
+      } else {
+        const list = JSON.parse(localStorage.getItem('amtsilati_chats') || '[]').filter(item => String(item.id) !== String(chatId));
+        localStorage.setItem('amtsilati_chats', JSON.stringify(list));
+      }
+      showToast('🗑️ Pesan dihapus oleh Ustadz.');
+      await loadChatsData();
+    }
+
+    // ==================== FUNGSI SESI USTADZ ====================
     async function loadUstadzDashboard() {
       let users = [];
       if (sb) {
@@ -1074,7 +1484,7 @@
           </div>
           ${s.status === 'pending' ? `
             <div style="display:flex; gap:8px; margin-top:8px;">
-              <button class="btn-press" onclick="approveSantri('${s.nis}', 'approved')" style="flex:1; background:#10b981; color:#fff; border:none; padding:8px; border-radius:10px; font-weight:700; font-size:12px;">✅ ACC Santri</button>
+              <button class="btn-press" onclick="approveSantri('${s.nis}', 'approved')" style="flex:1; background:#059669; color:#fff; border:none; padding:8px; border-radius:10px; font-weight:700; font-size:12px;">✅ ACC Santri</button>
               <button class="btn-press" onclick="approveSantri('${s.nis}', 'rejected')" style="background:#fee2e2; color:#b91c1c; border:none; padding:8px 12px; border-radius:10px; font-weight:700; font-size:12px;">Tolak</button>
             </div>
           ` : ''}
@@ -1130,11 +1540,24 @@
     }
 
     function switchTab(tab) {
+      document.getElementById('ask-popup').classList.add('hidden');
       ['home', 'learn', 'quiz', 'ustadz', 'profile'].forEach(t => {
-        document.getElementById('tab-' + t).classList.toggle('hidden', t !== tab);
+        const el = document.getElementById('tab-' + t);
+        const isActive = t === tab;
+        el.classList.toggle('hidden', !isActive);
+        if (isActive) {
+          el.classList.remove('screen');
+          void el.offsetWidth;
+          el.classList.add('screen');
+        }
         const nav = document.getElementById('nav-' + t);
-        if (nav) nav.classList.toggle('active', t === tab);
+        if (nav) nav.classList.toggle('active', isActive);
       });
+      if (tab === 'ustadz' && currentUser && currentUser.role === 'ustadz') {
+        loadChatsData();
+        loadUstadzDashboard();
+      }
+      smoothScrollTop();
     }
 
     let deferredPrompt;
