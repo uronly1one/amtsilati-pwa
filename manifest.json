@@ -1,0 +1,18 @@
+{
+  "name": "Amtsilati Digital - Belajar Kitab Kuning",
+  "short_name": "Amtsilati",
+  "description": "Aplikasi belajar Metode Amtsilati interaktif untuk santri dan ustadz",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0284c7",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

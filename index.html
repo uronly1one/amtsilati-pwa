@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Amtsilati Digital — Belajar Kitab Kuning Cepat</title>
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+  <meta name="theme-color" content="#0284c7" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --primary: #0284c7;
+      --primary-dark: #0369a1;
+      --secondary: #0d9488;
+      --accent: #f59e0b;
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --danger: #ef4444;
+      --success: #10b981;
+      --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: #e2e8f0;
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .app-shell {
+      width: 100%;
+      max-width: 480px;
+      background: var(--bg);
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+      box-shadow: 0 20px 60px rgba(15, 23, 42, 0.15);
+      padding-bottom: 84px;
+    }
+
+    .arabic {
+      font-family: 'Amiri', serif;
+      direction: rtl;
+      line-height: 2.1;
+    }
+
+    /* Smooth Page & Micro Animations */
+    .screen {
+      animation: pageEnter 0.45s var(--ease-spring) forwards;
+    }
+    @keyframes pageEnter {
+      from { opacity: 0; transform: translateY(18px) scale(0.985); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .stagger-1 { animation: slideUp 0.45s var(--ease-spring) 0.05s both; }
+    .stagger-2 { animation: slideUp 0.45s var(--ease-spring) 0.12s both; }
+    .stagger-3 { animation: slideUp 0.45s var(--ease-spring) 0.18s both; }
+    .stagger-4 { animation: slideUp 0.45s var(--ease-spring) 0.24s both; }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .btn-press {
+      transition: transform 0.18s var(--ease-spring), box-shadow 0.2s ease, background 0.2s ease;
+      cursor: pointer;
+    }
+    .btn-press:active { transform: scale(0.96); }
+
+    .hidden { display: none !important; }
+
+    /* Auth Screen (Ruangguru Inspired Gradient + Floating Orbs) */
+    .auth-hero {
+      background: linear-gradient(135deg, #0284c7 0%, #0d9488 65%, #0f766e 100%);
+      padding: 44px 24px 68px;
+      color: #fff;
+      border-bottom-left-radius: 32px;
+      border-bottom-right-radius: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+    .auth-hero::before, .auth-hero::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      animation: floatOrb 7s ease-in-out infinite alternate;
+    }
+    .auth-hero::before { width: 160px; height: 160px; top: -40px; right: -30px; }
+    .auth-hero::after { width: 110px; height: 110px; bottom: 10px; left: -25px; animation-delay: 1.5s; }
+    @keyframes floatOrb {
+      from { transform: translateY(0) scale(1); }
+      to { transform: translateY(14px) scale(1.06); }
+    }
+
+    .brand-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,0.18);
+      backdrop-filter: blur(8px);
+      padding: 8px 14px;
+      border-radius: 99px;
+      font-weight: 700;
+      font-size: 13px;
+      margin-bottom: 14px;
+    }
+
+    .auth-card {
+      background: var(--card);
+      margin: -42px 20px 24px;
+      padding: 24px 20px;
+      border-radius: 24px;
+      box-shadow: 0 14px 35px rgba(15, 23, 42, 0.08);
+      position: relative;
+      z-index: 2;
+    }
+
+    .form-group { margin-bottom: 14px; }
+    .form-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .form-input, .form-select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      font-family: inherit;
+      font-size: 14px;
+      background: #f8fafc;
+      transition: all 0.2s ease;
+    }
+    .form-input:focus, .form-select:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: #fff;
+      box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.12);
+    }
+
+    .pwd-rules {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px 8px;
+      margin-top: 8px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .pwd-rules span.valid { color: var(--success); font-weight: 700; }
+
+    .btn-primary {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #0284c7, #0d9488);
+      color: #fff;
+      font-weight: 700;
+      font-size: 15px;
+      box-shadow: 0 8px 20px rgba(2, 132, 199, 0.28);
+    }
+
+    .auth-switch {
+      text-align: center;
+      margin-top: 16px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .auth-switch a {
+      color: var(--primary);
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    /* Home Header (Ruangguru Signature Top Banner) */
+    .home-header {
+      background: linear-gradient(135deg, #0284c7 0%, #0d9488 100%);
+      padding: 22px 20px 56px;
+      color: #fff;
+      border-bottom-left-radius: 28px;
+      border-bottom-right-radius: 28px;
+    }
+    .top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .role-pill {
+      background: rgba(255,255,255,0.2);
+      padding: 4px 10px;
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    /* Progress / Hero Card */
+    .hero-progress {
+      background: #fff;
+      margin: -38px 18px 18px;
+      padding: 18px;
+      border-radius: 22px;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.07);
+    }
+    .progress-track {
+      height: 10px;
+      background: #e2e8f0;
+      border-radius: 99px;
+      overflow: hidden;
+      margin: 10px 0 6px;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #0284c7, #10b981);
+      border-radius: 99px;
+      transition: width 0.7s var(--ease-spring);
+    }
+
+    /* Ruangguru Style 4-Item Subject Grid */
+    .section-title {
+      font-size: 15px;
+      font-weight: 800;
+      margin: 0 18px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .subject-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      padding: 0 18px 18px;
+    }
+    .subject-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 16px 14px;
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.04);
+      border: 1.5px solid transparent;
+      transition: all 0.25s var(--ease-spring);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .subject-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(2, 132, 199, 0.3);
+      box-shadow: 0 12px 24px rgba(2, 132, 199, 0.12);
+    }
+    .subject-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+    .subject-card h4 { font-size: 14px; font-weight: 800; margin-bottom: 3px; }
+    .subject-card p { font-size: 11px; color: var(--muted); line-height: 1.4; }
+
+    /* Interactive Lesson & Bedah Lafadz */
+    .card-box {
+      background: #fff;
+      margin: 0 18px 14px;
+      padding: 18px;
+      border-radius: 20px;
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.04);
+    }
+    .arab-stage {
+      background: linear-gradient(135deg, #f0f9ff, #ecfdf5);
+      border: 1.5px solid #bae6fd;
+      border-radius: 18px;
+      padding: 18px 14px;
+      text-align: center;
+      margin: 12px 0;
+    }
+    .word-chip {
+      display: inline-block;
+      background: #fff;
+      border: 1.5px solid #cbd5e1;
+      padding: 6px 14px;
+      margin: 4px;
+      border-radius: 12px;
+      font-size: 24px;
+      cursor: pointer;
+      transition: all 0.2s var(--ease-spring);
+    }
+    .word-chip.active, .word-chip:hover {
+      background: #0284c7;
+      color: #fff;
+      border-color: #0284c7;
+      transform: translateY(-2px);
+    }
+    .bedah-panel {
+      background: #0f172a;
+      color: #fff;
+      padding: 14px;
+      border-radius: 14px;
+      font-size: 13px;
+      margin-top: 10px;
+      animation: pageEnter 0.25s ease;
+    }
+    .tatimmah-box {
+      background: #fffbeb;
+      border-left: 4px solid #f59e0b;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 12.5px;
+      color: #78350f;
+      margin-top: 12px;
+    }
+
+    /* Quiz Options */
+    .quiz-opt {
+      width: 100%;
+      text-align: left;
+      padding: 13px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      background: #fff;
+      margin-bottom: 8px;
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+    .quiz-opt.correct { background: #ecfdf5; border-color: #10b981; color: #065f46; }
+    .quiz-opt.wrong { background: #fef2f2; border-color: #ef4444; color: #991b1b; }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      max-width: 480px;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 6px 12px;
+      z-index: 50;
+    }
+    .nav-item {
+      border: none;
+      background: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      cursor: pointer;
+    }
+    .nav-item.active { color: var(--primary); }
+    .nav-item span.ico { font-size: 20px; }
+
+    /* Toast & Loading */
+    .toast {
+      position: fixed;
+      top: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0f172a;
+      color: #fff;
+      padding: 11px 18px;
+      border-radius: 99px;
+      font-size: 12.5px;
+      font-weight: 600;
+      z-index: 999;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      animation: pageEnter 0.25s ease;
+    }
+    .badge-status {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .badge-pending { background: #fef3c7; color: #b45309; }
+    .badge-approved { background: #d1fae5; color: #065f46; }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <div id="toast" class="toast hidden"></div>
+
+    <!-- ==================== 1. HALAMAN LOGIN & REGISTRASI ==================== -->
+    <div id="view-auth" class="screen">
+      <div class="auth-hero">
+        <div class="brand-badge">📖 AMTSILATI DIGITAL PWA</div>
+        <h1 style="font-size:24px; font-weight:800; line-height:1.25;">Belajar Baca Kitab Kuning Jadi Mudah & Cepat</h1>
+        <p style="font-size:13px; opacity:0.9; margin-top:6px;">Metode Praktis Penguasaan Qoidah, Jilid 1–2 & Tatimmah</p>
+      </div>
+
+      <!-- FORM LOGIN -->
+      <div id="box-login" class="auth-card stagger-1">
+        <h3 style="font-size:18px; font-weight:800; margin-bottom:4px;">Masuk Akun</h3>
+        <p style="font-size:12px; color:var(--muted); margin-bottom:16px;">Gunakan NIS (Santri / Ustadz) dan Password</p>
+
+        <div class="form-group">
+          <label class="form-label">NIS / ID Pengampu *</label>
+          <input type="text" id="login-nis" class="form-input" placeholder="Contoh: 2026001 atau UST001" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password *</label>
+          <input type="password" id="login-pass" class="form-input" placeholder="Masukkan password Anda" />
+        </div>
+        <button class="btn-primary btn-press" onclick="handleLogin()">Masuk ke Ruang Belajar</button>
+
+        <div class="auth-switch">
+          Santri baru belum punya akun? <a onclick="toggleAuthMode('register')">Daftar Santri di sini</a>
+        </div>
+      </div>
+
+      <!-- FORM REGISTRASI SANTRI -->
+      <div id="box-register" class="auth-card hidden stagger-1">
+        <h3 style="font-size:18px; font-weight:800; margin-bottom:4px;">Registrasi Santri Baru</h3>
+        <p style="font-size:12px; color:var(--muted); margin-bottom:14px;">Semua kolom wajib diisi & menunggu persetujuan (ACC) Ustadz.</p>
+
+        <div class="form-group">
+          <label class="form-label">1. NIS (Nomor Induk Santri) *</label>
+          <input type="text" id="reg-nis" class="form-input" placeholder="Masukkan NIS resmi pesantren" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">2. Nama Sesuai KTP / Akta *</label>
+          <input type="text" id="reg-nama" class="form-input" placeholder="Nama lengkap sesuai identitas" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">3. Kelas / Jenjang *</label>
+          <select id="reg-kelas" class="form-select">
+            <option value="">-- Pilih Kelas --</option>
+            <option value="I'dad (Pemula)">I'dad (Pemula)</option>
+            <option value="Ula A">Ula A</option>
+            <option value="Ula B">Ula B</option>
+            <option value="Wustho">Wustho</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">4. Nama Ibu Sesuai KTP *</label>
+          <input type="text" id="reg-ibu" class="form-input" placeholder="Nama lengkap ibu kandung" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">5. Nomor WhatsApp Aktif *</label>
+          <input type="tel" id="reg-wa" class="form-input" placeholder="Contoh: 081234567890" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">6. Password Akun *</label>
+          <input type="password" id="reg-pass" class="form-input" placeholder="Buat password kuat" oninput="validatePasswordLive(this.value)" required />
+          <div class="pwd-rules">
+            <span id="rule-len">• Min. 8 karakter</span>
+            <span id="rule-upper">• Huruf Besar (A-Z)</span>
+            <span id="rule-lower">• Huruf Kecil (a-z)</span>
+            <span id="rule-num">• Angka (0-9)</span>
+            <span id="rule-sym" style="grid-column: span 2;">• Simbol unik (. , @ # ! dll)</span>
+          </div>
+        </div>
+
+        <button class="btn-primary btn-press" onclick="handleRegister()">Kirim Pendaftaran (Minta ACC Ustadz)</button>
+        <div class="auth-switch">
+          Sudah punya akun & sudah di-ACC? <a onclick="toggleAuthMode('login')">Kembali ke Login</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 2. APLIKASI UTAMA (SANTRI & USTADZ) ==================== -->
+    <div id="view-app" class="hidden">
+      <!-- HEADER -->
+      <div class="home-header">
+        <div class="top-row">
+          <div>
+            <span class="role-pill" id="ui-role-badge">SANTRI AMTSILATI</span>
+            <h2 id="ui-user-name" style="font-size:19px; font-weight:800; margin-top:6px;">Assalamu'alaikum</h2>
+            <p id="ui-user-meta" style="font-size:12px; opacity:0.9;">NIS: - • Kelas: -</p>
+          </div>
+          <button id="btn-install-pwa" class="btn-press hidden" onclick="installPWA()" style="background:#fff; color:#0284c7; border:none; padding:8px 12px; border-radius:12px; font-weight:800; font-size:11px;">📲 Install App</button>
+        </div>
+      </div>
+
+      <!-- TAB 1: BERANDA -->
+      <div id="tab-home" class="screen">
+        <!-- Kartu Progres Ala Ruangguru -->
+        <div class="hero-progress stagger-1">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:12px; font-weight:800; color:var(--primary);">🎯 TARGET KHATAM AMTSILATI</span>
+            <span id="ui-progress-pct" style="font-size:13px; font-weight:800; color:var(--success);">0%</span>
+          </div>
+          <div class="progress-track">
+            <div id="ui-progress-bar" class="progress-fill" style="width: 0%;"></div>
+          </div>
+          <p id="ui-progress-text" style="font-size:11.5px; color:var(--muted);">Selesaikan Rumus Qoidah terlebih dahulu sebelum masuk Jilid 1–2.</p>
+        </div>
+
+        <!-- Menu 4 Pilar Metode Amtsilati -->
+        <div class="section-title stagger-2">
+          <span>Kurikulum Metode Amtsilati</span>
+          <span style="font-size:11px; color:var(--primary);">Interaktif</span>
+        </div>
+
+        <div class="subject-grid stagger-2">
+          <div class="subject-card btn-press" onclick="openCategory('rumus_qoidah')">
+            <div class="subject-icon" style="background:#e0f2fe; color:#0284c7;">🧭</div>
+            <h4>Rumus Qoidah</h4>
+            <p>Rumus wajib dikuasai sebelum merangkul Jilid 1–6</p>
+          </div>
+          <div class="subject-card btn-press" onclick="openCategory('jilid_1')">
+            <div class="subject-icon" style="background:#ccfbf1; color:#0d9488;">📘</div>
+            <h4>Kitab Jilid 1</h4>
+            <p>Kelas dasar pengenalan Isim, Huruf Jar & tanda baca</p>
+          </div>
+          <div class="subject-card btn-press" onclick="openCategory('jilid_2')">
+            <div class="subject-icon" style="background:#fef3c7; color:#d97706;">📙</div>
+            <h4>Kitab Jilid 2</h4>
+            <p>Kelas lanjutan Dhomir, Isim Isyarah & Maushul</p>
+          </div>
+          <div class="subject-card btn-press" onclick="openCategory('tatimmah')">
+            <div class="subject-icon" style="background:#fce7f3; color:#db2777;">🧪</div>
+            <h4>Tatimmah</h4>
+            <p>Resep praktis penerapan jilid ke teks kitab gundul</p>
+          </div>
+        </div>
+
+        <!-- Panel Khusus Ustadz di Beranda (jika login sebagai Ustadz) -->
+        <div id="ustadz-quick-banner" class="card-box hidden stagger-3" style="border:1.5px solid #0284c7;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <h4 style="font-size:14px; font-weight:800; color:var(--primary);">🛡️ Panel Persetujuan Ustadz</h4>
+              <p id="pending-count-text" style="font-size:12px; color:var(--muted); margin-top:2px;">Memeriksa pendaftaran santri baru...</p>
+            </div>
+            <button class="btn-press" onclick="switchTab('ustadz')" style="background:var(--primary); color:#fff; border:none; padding:8px 14px; border-radius:12px; font-weight:700; font-size:12px;">Kelola</button>
+          </div>
+        </div>
+
+        <!-- Daftar Bab Pelajaran Aktif -->
+        <div class="section-title stagger-3">
+          <span id="active-cat-title">Semua Materi Pilihan</span>
+        </div>
+        <div id="module-list" class="stagger-4"></div>
+      </div>
+
+      <!-- TAB 2: RUANG BELAJAR INTERAKTIF (BEDAH LAFADZ & TATIMMAH) -->
+      <div id="tab-learn" class="screen hidden">
+        <div class="card-box">
+          <button class="btn-press" onclick="switchTab('home')" style="background:#f1f5f9; border:none; padding:6px 12px; border-radius:10px; font-size:12px; font-weight:700; margin-bottom:10px;">← Kembali ke Kurikulum</button>
+          <span id="learn-cat-badge" class="badge-status badge-approved">RUMUS QOIDAH</span>
+          <h3 id="learn-title" style="font-size:18px; font-weight:800; margin-top:8px;">Judul Materi</h3>
+          <p id="learn-sub" style="font-size:12px; color:var(--muted); margin-bottom:12px;">Subjudul</p>
+          <p id="learn-summary" style="font-size:13.5px; line-height:1.65; color:#334155;"></p>
+
+          <div class="arab-stage">
+            <div style="font-size:11px; font-weight:700; color:var(--primary); margin-bottom:8px;">✨ KLIK SETIAP KATA ARAB UNTUK MEMBEDAH RUMUSNYA</div>
+            <div id="learn-arab-words" class="arabic"></div>
+            <div id="learn-bedah-detail" class="bedah-panel hidden"></div>
+          </div>
+
+          <div id="learn-tatimmah" class="tatimmah-box"></div>
+
+          <button id="btn-complete-module" class="btn-primary btn-press" style="margin-top:16px;" onclick="markModuleComplete()">✅ Tandai Paham & Lanjut Latihan</button>
+        </div>
+      </div>
+
+      <!-- TAB 3: LATIHAN INTERAKTIF (PENGGANTI VIDEO) -->
+      <div id="tab-quiz" class="screen hidden">
+        <div class="card-box">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <span style="font-size:12px; font-weight:800; color:var(--primary);">⚡ UJI PEMAHAMAN QOIDAH</span>
+            <select id="quiz-filter" class="form-select" style="width:auto; padding:6px 10px; font-size:12px;" onchange="renderQuiz()">
+              <option value="all">Semua Materi</option>
+              <option value="rumus_qoidah">Rumus Qoidah</option>
+              <option value="jilid_1">Jilid 1</option>
+              <option value="jilid_2">Jilid 2</option>
+              <option value="tatimmah">Tatimmah</option>
+            </select>
+          </div>
+          <div id="quiz-container"></div>
+        </div>
+      </div>
+
+      <!-- TAB 4: SESI USTADZ (ACC SANTRI & INPUT MATERI) -->
+      <div id="tab-ustadz" class="screen hidden">
+        <div class="card-box">
+          <h3 style="font-size:16px; font-weight:800; margin-bottom:4px;">📋 Persetujuan Registrasi Santri</h3>
+          <p style="font-size:12px; color:var(--muted); margin-bottom:12px;">Santri baru hanya bisa login setelah Anda tekan tombol ACC.</p>
+          <div id="ustadz-santri-list"></div>
+        </div>
+
+        <div class="card-box">
+          <h3 style="font-size:16px; font-weight:800; margin-bottom:4px;">➕ Tambah Materi Amtsilati Baru</h3>
+          <p style="font-size:12px; color:var(--muted); margin-bottom:12px;">Materi langsung tampil di aplikasi seluruh santri.</p>
+          <div class="form-group">
+            <label class="form-label">Kategori Kurikulum</label>
+            <select id="new-mod-cat" class="form-select">
+              <option value="rumus_qoidah">Rumus Qoidah</option>
+              <option value="jilid_1">Jilid 1</option>
+              <option value="jilid_2">Jilid 2</option>
+              <option value="tatimmah">Tatimmah</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Judul Bab / Pelajaran</label>
+            <input type="text" id="new-mod-title" class="form-input" placeholder="Misal: Jilid 1 - Bab 2: Tanda-tanda Isim" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Penjelasan Qoidah</label>
+            <textarea id="new-mod-summary" class="form-input" rows="3" placeholder="Tuliskan penjelasan ringkas dan mudah dipahami anak SD..."></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Contoh Lafadz Arab</label>
+            <input type="text" id="new-mod-arab" class="form-input arabic" placeholder="اَلْحَمْدُ لِلّٰهِ رَبِّ الْعَالَمِيْنَ" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Resep Tatimmah / Kunci Cepat</label>
+            <input type="text" id="new-mod-tatimmah" class="form-input" placeholder="Tips cepat membaca contoh di atas..." />
+          </div>
+          <button class="btn-primary btn-press" onclick="addNewModule()">Simpan Materi ke Database</button>
+        </div>
+      </div>
+
+      <!-- TAB 5: PROFIL -->
+      <div id="tab-profile" class="screen hidden">
+        <div class="card-box">
+          <h3 style="font-size:16px; font-weight:800; margin-bottom:12px;">🪪 Kartu Identitas Digital</h3>
+          <div id="profile-details" style="font-size:13px; line-height:2;"></div>
+          <button class="btn-press" onclick="logout()" style="width:100%; margin-top:16px; padding:12px; border:none; border-radius:14px; background:#fee2e2; color:#b91c1c; font-weight:800;">Keluar Akun (Logout)</button>
+        </div>
+      </div>
+
+      <!-- BOTTOM NAVIGATION -->
+      <nav class="bottom-nav">
+        <button class="nav-item active" id="nav-home" onclick="switchTab('home')">
+          <span class="ico">🏠</span><span>Beranda</span>
+        </button>
+        <button class="nav-item" id="nav-learn" onclick="switchTab('learn')">
+          <span class="ico">📖</span><span>Bedah Kitab</span>
+        </button>
+        <button class="nav-item" id="nav-quiz" onclick="switchTab('quiz')">
+          <span class="ico">🎯</span><span>Latihan</span>
+        </button>
+        <button class="nav-item hidden" id="nav-ustadz" onclick="switchTab('ustadz')">
+          <span class="ico">🛡️</span><span>Ustadz</span>
+        </button>
+        <button class="nav-item" id="nav-profile" onclick="switchTab('profile')">
+          <span class="ico">👤</span><span>Profil</span>
+        </button>
+      </nav>
+    </div>
+  </div>
+
+  <script>
+    // =========================================================================
+    // KONFIGURASI SUPABASE (Ganti dengan URL & ANON KEY dari project Supabase)
+    // =========================================================================
+    const SUPABASE_URL = 'https://uwoltbgptwduvkkhfxzf.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV3b2x0YmdwdHdkdXZra2hmeHpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU1NzA5ODksImV4cCI6MjExMTE0Njk4OX0.apjEeyZ2byRiBOeqXyuh6JohyKVAbRf1_hLRuB3dGNY';
+    const isSupabaseConfigured = !SUPABASE_URL.includes('YOUR_PROJECT_ID');
+    const sb = isSupabaseConfigured ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+    // Data Cadangan Lokal (Berjalan otomatis sebelum Supabase dihubungkan)
+    const FALLBACK_MODULES = [
+      {
+        id: 'm1', kategori: 'rumus_qoidah', urutan: 1,
+        judul: 'Rumus Utama: Pembagian Kalimah (Kata)',
+        subjudul: 'Wajib dikuasai sebelum masuk Jilid 1',
+        ringkasan_materi: 'Setiap kata dalam bahasa Arab (Kalimah) hanya terbagi menjadi 3 jenis: ISIM (kata benda/sifat), FI\'IL (kata kerja), dan HURUF (kata penghubung).',
+        teks_arab: 'بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ',
+        bedah_kata: [
+          { kata: 'بِ', arti: 'Dengan', rumus: 'Huruf Jar (menyebabkan kata setelahnya dibaca kasrah/jer)' },
+          { kata: 'اسْمِ', arti: 'Nama', rumus: 'Isim Mufrad (dibaca jer karena kemasukan huruf jar بِ)' },
+          { kata: 'اللّٰهِ', arti: 'Allah', rumus: 'Isim Jalalah (Mudhaf Ilaih, dibaca jer dengan kasrah)' },
+          { kata: 'الرَّحْمٰنِ', arti: 'Yang Maha Pengasih', rumus: 'Isim Sifat (Na\'at mengikuti harakat lafadz Allah)' }
+        ],
+        catatan_tatimmah: 'Rumus Cepat: Jika kata diawali AL (ال), berakhiran TANWIN, atau didahului HURUF JAR, pastikan itu ISIM.'
+      },
+      {
+        id: 'm2', kategori: 'jilid_1', urutan: 1,
+        judul: 'Jilid 1 - Bab 1: Huruf Jar & Isim yang Dijerkan',
+        subjudul: 'Kelas Dasar Perubahan Harakat Akhir',
+        ringkasan_materi: 'Huruf Jar membuat isim setelahnya dibaca Jer (tanda aslinya kasrah). Contoh huruf jar: مِنْ، إِلٰى، عَنْ، عَلٰى، فِيْ، بِ، كَ، لِ.',
+        teks_arab: 'الْعِلْمُ فِي الصُّدُوْرِ لَا فِي السُّطُوْرِ',
+        bedah_kata: [
+          { kata: 'الْعِلْمُ', arti: 'Ilmu itu', rumus: 'Isim (diawali ال), kedudukan Mubtada (dibaca Rafa\' / dhammah)' },
+          { kata: 'فِي', arti: 'Di dalam', rumus: 'Huruf Jar' },
+          { kata: 'الصُّدُوْرِ', arti: 'Dada-dada (hati)', rumus: 'Isim Jamak Taksir (dibaca Jer dengan kasrah karena didahului فِي)' }
+        ],
+        catatan_tatimmah: 'Resep Tatimmah Jilid 1: Setiap melihat huruf فِي atau عَلٰى di teks gundul, langsung kasrahkan akhir isim setelahnya.'
+      },
+      {
+        id: 'm3', kategori: 'jilid_2', urutan: 1,
+        judul: 'Jilid 2 - Bab 1: Dhomir (Kata Ganti)',
+        subjudul: 'Kata Ganti Terpisah & Bersambung',
+        ringkasan_materi: 'Dhomir adalah kata ganti orang (هُوَ، هُمَا، هُمْ dst.) dan termasuk Isim Mabni (harakat akhirnya tetap tidak berubah).',
+        teks_arab: 'هُوَ طَالِبٌ مُجْتَهِدٌ',
+        bedah_kata: [
+          { kata: 'هُوَ', arti: 'Dia (laki-laki)', rumus: 'Dhomir Munfashil (Isim Mabni, kedudukan Mubtada)' },
+          { kata: 'طَالِبٌ', arti: 'Seorang santri', rumus: 'Isim Mufrad (Khabar, dibaca Rafa\' dengan dhammah tanwin)' },
+          { kata: 'مُجْتَهِدٌ', arti: 'Yang bersungguh-sungguh', rumus: 'Isim Fa\'il (Sifat bagi طَالِبٌ)' }
+        ],
+        catatan_tatimmah: 'Resep Tatimmah Jilid 2: Hafalkan urutan 14 dhomir agar mudah mengenali pelaku kata kerja.'
+      },
+      {
+        id: 'm4', kategori: 'tatimmah', urutan: 1,
+        judul: 'Tatimmah 1: Resep Membaca Teks Kitab Gundul',
+        subjudul: 'Penerapan Terpadu Jilid 1 & Jilid 2',
+        ringkasan_materi: 'Saat menghadapi kalimat tanpa harakat: (1) Tentukan jenis kata (Isim/Fi\'il/Huruf), (2) Cek huruf jar atau dhomir, (3) Tentukan harakat akhir.',
+        teks_arab: 'مَنْ سَلَكَ طَرِيْقًا يَلْتَمِسُ فِيْهِ عِلْمًا',
+        bedah_kata: [
+          { kata: 'مَنْ', arti: 'Barangsiapa', rumus: 'Isim Syarat (Mabni sukun)' },
+          { kata: 'سَلَكَ', arti: 'Menempuh', rumus: 'Fi\'il Madhi (mabni fathah)' },
+          { kata: 'طَرِيْقًا', arti: 'Suatu jalan', rumus: 'Isim Mufrad (Maf\'ul Bih / objek, dibaca Nashab dengan fathah tanwin)' }
+        ],
+        catatan_tatimmah: 'Kunci Utama Tatimmah: Tentukan jenis katanya dulu sebelum menerjemahkan!'
+      }
+    ];
+
+    const FALLBACK_QUIZZES = [
+      { id: 'q1', kategori: 'rumus_qoidah', pertanyaan: 'Ada berapakah pembagian Kalimah (kata) dalam kaidah Amtsilati?', teks_arab: '', opsi_a: '2 (Isim dan Fi\'il)', opsi_b: '3 (Isim, Fi\'il, dan Huruf)', opsi_c: '4 macam', opsi_d: '5 macam', jawaban_benar: 'B', pembahasan: 'Kalimah dalam bahasa Arab terbagi menjadi 3: Isim, Fi\'il, dan Huruf.' },
+      { id: 'q2', kategori: 'jilid_1', pertanyaan: 'Mengapa lafadz الصُّدُوْرِ dibaca kasrah di huruf akhirnya?', teks_arab: 'الْعِلْمُ فِي الصُّدُوْرِ', opsi_a: 'Karena menjadi subjek', opsi_b: 'Karena didahului Huruf Jar فِي', opsi_c: 'Karena kata kerja lampau', opsi_d: 'Karena diawali Alif Lam', jawaban_benar: 'B', pembahasan: 'Huruf Jar فِي menyebabkan isim setelahnya dibaca Jer (kasrah).' },
+      { id: 'q3', kategori: 'jilid_2', pertanyaan: 'Termasuk jenis kata apakah lafadz هُوَ ?', teks_arab: 'هُوَ طَالِبٌ', opsi_a: 'Fi\'il Madhi', opsi_b: 'Huruf Jar', opsi_c: 'Dhomir (Isim Mabni)', opsi_d: 'Huruf Athaf', jawaban_benar: 'C', pembahasan: 'هُوَ adalah Dhomir Munfashil (kata ganti terpisah) yang termasuk Isim Mabni.' },
+      { id: 'q4', kategori: 'tatimmah', pertanyaan: 'Langkah pertama dalam resep Tatimmah saat membaca teks gundul adalah...', teks_arab: '', opsi_a: 'Menebak artinya', opsi_b: 'Menentukan jenis kata (Isim, Fi\'il, atau Huruf)', opsi_c: 'Membaca dari akhir kalimat', opsi_d: 'Menghafal kamus', jawaban_benar: 'B', pembahasan: 'Menentukan jenis kata adalah kunci menentukan harakat akhir.' }
+    ];
+
+    let currentUser = null;
+    let modulesData = [];
+    let quizzesData = [];
+    let completedIds = [];
+    let activeModule = null;
+    let activeCategoryFilter = 'all';
+
+    // Toast Helper
+    function showToast(msg) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.classList.remove('hidden');
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => el.classList.add('hidden'), 3200);
+    }
+
+    // Switch Login / Register
+    function toggleAuthMode(mode) {
+      document.getElementById('box-login').classList.toggle('hidden', mode !== 'login');
+      document.getElementById('box-register').classList.toggle('hidden', mode !== 'register');
+    }
+
+    // Live Password Validation (Huruf Besar, Huruf Kecil, Angka, Simbol Unik)
+    function checkPasswordRules(pwd) {
+      return {
+        len: pwd.length >= 8,
+        upper: /[A-Z]/.test(pwd),
+        lower: /[a-z]/.test(pwd),
+        num: /[0-9]/.test(pwd),
+        sym: /[^A-Za-z0-9]/.test(pwd)
+      };
+    }
+
+    function validatePasswordLive(pwd) {
+      const r = checkPasswordRules(pwd);
+      document.getElementById('rule-len').classList.toggle('valid', r.len);
+      document.getElementById('rule-upper').classList.toggle('valid', r.upper);
+      document.getElementById('rule-lower').classList.toggle('valid', r.lower);
+      document.getElementById('rule-num').classList.toggle('valid', r.num);
+      document.getElementById('rule-sym').classList.toggle('valid', r.sym);
+    }
+
+    // LocalStorage Fallback Helper
+    function getLocalUsers() {
+      const saved = JSON.parse(localStorage.getItem('amtsilati_users') || 'null');
+      if (saved) return saved;
+      const seed = [
+        { nis: 'UST001', nama_lengkap: 'Ustadz Pengampu Amtsilati', kelas: 'Pengampu', nama_ibu: 'Admin', no_wa: '081234567890', password: 'Ustadz@123', role: 'ustadz', status: 'approved' }
+      ];
+      localStorage.setItem('amtsilati_users', JSON.stringify(seed));
+      return seed;
+    }
+
+    // Registrasi Santri Baru (Status = pending, wajib ACC Ustadz)
+    async function handleRegister() {
+      const nis = document.getElementById('reg-nis').value.trim();
+      const nama = document.getElementById('reg-nama').value.trim();
+      const kelas = document.getElementById('reg-kelas').value.trim();
+      const ibu = document.getElementById('reg-ibu').value.trim();
+      const wa = document.getElementById('reg-wa').value.trim();
+      const pass = document.getElementById('reg-pass').value;
+
+      if (!nis || !nama || !kelas || !ibu || !wa || !pass) {
+        return showToast('⚠️ Semua kolom wajib diisi lengkap!');
+      }
+
+      const rules = checkPasswordRules(pass);
+      if (!rules.len || !rules.upper || !rules.lower || !rules.num || !rules.sym) {
+        return showToast('⚠️ Password wajib gabungan huruf besar, kecil, angka & simbol!');
+      }
+
+      const payload = {
+        nis, nama_lengkap: nama, kelas, nama_ibu: ibu, no_wa: wa, password: pass,
+        role: 'santri', status: 'pending'
+      };
+
+      if (sb) {
+        const { error } = await sb.from('amtsilati_users').insert([payload]);
+        if (error) return showToast('❌ Gagal daftar: NIS mungkin sudah terdaftar.');
+      } else {
+        const users = getLocalUsers();
+        if (users.some(u => u.nis === nis)) return showToast('❌ NIS sudah terdaftar!');
+        users.push(payload);
+        localStorage.setItem('amtsilati_users', JSON.stringify(users));
+      }
+
+      showToast('✅ Registrasi terkirim! Menunggu persetujuan (ACC) Ustadz.');
+      toggleAuthMode('login');
+      document.getElementById('login-nis').value = nis;
+    }
+
+    // Login Satu Pintu (Santri & Ustadz cukup NIS + Password)
+    async function handleLogin() {
+      const nis = document.getElementById('login-nis').value.trim();
+      const pass = document.getElementById('login-pass').value;
+
+      if (!nis || !pass) return showToast('⚠️ Masukkan NIS dan Password!');
+
+      let user = null;
+      if (sb) {
+        const { data, error } = await sb.from('amtsilati_users').select('*').eq('nis', nis).eq('password', pass).maybeSingle();
+        if (error || !data) return showToast('❌ NIS atau Password salah!');
+        user = data;
+      } else {
+        const users = getLocalUsers();
+        user = users.find(u => u.nis === nis && u.password === pass);
+        if (!user) return showToast('❌ NIS atau Password salah!');
+      }
+
+      if (user.status === 'pending') {
+        return showToast('⏳ Akun Anda menunggu persetujuan (ACC) dari Ustadz.');
+      }
+      if (user.status === 'rejected') {
+        return showToast('❌ Pendaftaran akun Anda ditolak oleh Ustadz.');
+      }
+
+      currentUser = user;
+      localStorage.setItem('amtsilati_session', JSON.stringify(user));
+      initApp();
+    }
+
+    function logout() {
+      localStorage.removeItem('amtsilati_session');
+      currentUser = null;
+      document.getElementById('view-app').classList.add('hidden');
+      document.getElementById('view-auth').classList.remove('hidden');
+    }
+
+    async function initApp() {
+      document.getElementById('view-auth').classList.add('hidden');
+      document.getElementById('view-app').classList.remove('hidden');
+
+      const isUstadz = currentUser.role === 'ustadz';
+      document.getElementById('ui-role-badge').textContent = isUstadz ? '🛡️ SESI USTADZ PENGAMPU' : '🎓 SESI SANTRI AMTSILATI';
+      document.getElementById('ui-user-name').textContent = currentUser.nama_lengkap;
+      document.getElementById('ui-user-meta').textContent = `NIS: ${currentUser.nis} • Kelas: ${currentUser.kelas}`;
+
+      // Tampilkan menu Ustadz hanya jika role === 'ustadz'
+      document.getElementById('nav-ustadz').classList.toggle('hidden', !isUstadz);
+      document.getElementById('ustadz-quick-banner').classList.toggle('hidden', !isUstadz);
+
+      // Profil
+      document.getElementById('profile-details').innerHTML = `
+        <div><strong>NIS:</strong> ${currentUser.nis}</div>
+        <div><strong>Nama Lengkap:</strong> ${currentUser.nama_lengkap}</div>
+        <div><strong>Peran:</strong> ${currentUser.role.toUpperCase()}</div>
+        <div><strong>Kelas:</strong> ${currentUser.kelas}</div>
+        <div><strong>Nama Ibu:</strong> ${currentUser.nama_ibu}</div>
+        <div><strong>No. WhatsApp:</strong> ${currentUser.no_wa}</div>
+      `;
+
+      await loadContentData();
+      if (isUstadz) await loadUstadzDashboard();
+      switchTab('home');
+    }
+
+    async function loadContentData() {
+      if (sb) {
+        const { data: mods } = await sb.from('amtsilati_modules').select('*').order('urutan', { ascending: true });
+        const { data: qzs } = await sb.from('amtsilati_quizzes').select('*');
+        const { data: prog } = await sb.from('amtsilati_progress').select('module_id').eq('nis', currentUser.nis);
+        modulesData = (mods && mods.length) ? mods : FALLBACK_MODULES;
+        quizzesData = (qzs && qzs.length) ? qzs : FALLBACK_QUIZZES;
+        completedIds = (prog || []).map(p => p.module_id);
+      } else {
+        const customMods = JSON.parse(localStorage.getItem('amtsilati_custom_mods') || '[]');
+        modulesData = [...FALLBACK_MODULES, ...customMods];
+        quizzesData = FALLBACK_QUIZZES;
+        completedIds = JSON.parse(localStorage.getItem('amtsilati_prog_' + currentUser.nis) || '[]');
+      }
+
+      updateProgressUI();
+      renderModuleList();
+      renderQuiz();
+    }
+
+    function updateProgressUI() {
+      const total = modulesData.length || 1;
+      const done = completedIds.length;
+      const pct = Math.min(100, Math.round((done / total) * 100));
+      document.getElementById('ui-progress-pct').textContent = pct + '%';
+      document.getElementById('ui-progress-bar').style.width = pct + '%';
+      document.getElementById('ui-progress-text').textContent =
+        `${done} dari ${total} bab selesai dikuasai. Terus istiqamah!`;
+    }
+
+    function openCategory(cat) {
+      activeCategoryFilter = cat;
+      const labels = {
+        all: 'Semua Materi Pilihan',
+        rumus_qoidah: '🧭 Materi Rumus Qoidah',
+        jilid_1: '📘 Materi Kitab Jilid 1',
+        jilid_2: '📙 Materi Kitab Jilid 2',
+        tatimmah: '🧪 Resep Tatimmah'
+      };
+      document.getElementById('active-cat-title').textContent = labels[cat] || 'Materi';
+      renderModuleList();
+    }
+
+    function renderModuleList() {
+      const listEl = document.getElementById('module-list');
+      const filtered = activeCategoryFilter === 'all'
+        ? modulesData
+        : modulesData.filter(m => m.kategori === activeCategoryFilter);
+
+      if (!filtered.length) {
+        listEl.innerHTML = `<div class="card-box" style="text-align:center; color:var(--muted); font-size:13px;">Belum ada materi pada kategori ini.</div>`;
+        return;
+      }
+
+      listEl.innerHTML = filtered.map(m => {
+        const isDone = completedIds.includes(m.id);
+        return `
+          <div class="card-box btn-press" onclick="openModuleDetail('${m.id}')" style="display:flex; justify-content:space-between; align-items:center; gap:12px;">
+            <div>
+              <span class="badge-status ${isDone ? 'badge-approved' : 'badge-pending'}">${m.kategori.replace('_', ' ').toUpperCase()}</span>
+              <h4 style="font-size:14px; font-weight:800; margin-top:6px;">${m.judul}</h4>
+              <p style="font-size:12px; color:var(--muted); margin-top:2px;">${m.subjudul || ''}</p>
+            </div>
+            <div style="font-size:20px;">${isDone ? '✅' : '➡️'}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openModuleDetail(id) {
+      const mod = modulesData.find(m => m.id === id);
+      if (!mod) return;
+      activeModule = mod;
+
+      document.getElementById('learn-cat-badge').textContent = mod.kategori.replace('_', ' ').toUpperCase();
+      document.getElementById('learn-title').textContent = mod.judul;
+      document.getElementById('learn-sub').textContent = mod.subjudul || '';
+      document.getElementById('learn-summary').textContent = mod.ringkasan_materi;
+      document.getElementById('learn-tatimmah').innerHTML = `<strong>🧪 Resep Tatimmah:</strong> ${mod.catatan_tatimmah || 'Terapkan rumus qoidah sesuai posisi kata.'}`;
+
+      const words = Array.isArray(mod.bedah_kata) && mod.bedah_kata.length
+        ? mod.bedah_kata
+        : (mod.teks_arab || '').split(' ').filter(Boolean).map(w => ({ kata: w, arti: 'Lafadz Arab', rumus: 'Analisis jenis kata (Isim / Fi\'il / Huruf)' }));
+
+      const wordsEl = document.getElementById('learn-arab-words');
+      const detailEl = document.getElementById('learn-bedah-detail');
+      detailEl.classList.add('hidden');
+
+      wordsEl.innerHTML = words.map((w, idx) => `
+        <span class="word-chip" onclick="inspectWord(${idx})">${w.kata}</span>
+      `).join('');
+
+      window._currentBedahWords = words;
+      switchTab('learn');
+    }
+
+    function inspectWord(idx) {
+      const item = window._currentBedahWords[idx];
+      if (!item) return;
+      document.querySelectorAll('.word-chip').forEach((el, i) => el.classList.toggle('active', i === idx));
+      const detailEl = document.getElementById('learn-bedah-detail');
+      detailEl.classList.remove('hidden');
+      detailEl.innerHTML = `
+        <div style="font-size:11px; color:#38bdf8; font-weight:700;">BEDAH LAFADZ AMTSILATI</div>
+        <div style="font-size:15px; font-weight:800; margin:4px 0;">Arti: "${item.arti}"</div>
+        <div style="font-size:12.5px; color:#e2e8f0;">📌 <strong>Rumus Qoidah:</strong> ${item.rumus}</div>
+      `;
+    }
+
+    async function markModuleComplete() {
+      if (!activeModule) return;
+      if (!completedIds.includes(activeModule.id)) {
+        completedIds.push(activeModule.id);
+        if (sb) {
+          await sb.from('amtsilati_progress').upsert([{ nis: currentUser.nis, module_id: activeModule.id, selesai: true }]);
+        } else {
+          localStorage.setItem('amtsilati_prog_' + currentUser.nis, JSON.stringify(completedIds));
+        }
+        updateProgressUI();
+        renderModuleList();
+      }
+      showToast('🎉 Alhamdulillah! Materi ditandai paham.');
+      switchTab('quiz');
+    }
+
+    function renderQuiz() {
+      const filter = document.getElementById('quiz-filter').value;
+      const list = filter === 'all' ? quizzesData : quizzesData.filter(q => q.kategori === filter);
+      const container = document.getElementById('quiz-container');
+
+      if (!list.length) {
+        container.innerHTML = `<p style="font-size:13px; color:var(--muted);">Belum ada soal untuk kategori ini.</p>`;
+        return;
+      }
+
+      container.innerHTML = list.map((q, idx) => `
+        <div style="padding-bottom:16px; margin-bottom:16px; border-bottom:1px solid var(--border);">
+          <div style="font-size:12px; font-weight:800; color:var(--primary); margin-bottom:4px;">Soal #${idx + 1} (${q.kategori.replace('_', ' ').toUpperCase()})</div>
+          <p style="font-size:13.5px; font-weight:700; margin-bottom:8px;">${q.pertanyaan}</p>
+          ${q.teks_arab ? `<div class="arabic" style="font-size:24px; text-align:center; background:#f8fafc; padding:10px; border-radius:12px; margin-bottom:10px;">${q.teks_arab}</div>` : ''}
+          ${['A', 'B', 'C', 'D'].map(opt => `
+            <button class="quiz-opt btn-press" onclick="answerQuiz(this, '${q.id}', '${opt}', '${q.jawaban_benar}')">
+              ${opt}. ${q['opsi_' + opt.toLowerCase()]}
+            </button>
+          `).join('')}
+          <div id="explain-${q.id}" class="tatimmah-box hidden">💡 <strong>Pembahasan:</strong> ${q.pembahasan || ''}</div>
+        </div>
+      `).join('');
+    }
+
+    function answerQuiz(btn, qId, chosen, correct) {
+      const parent = btn.parentElement;
+      parent.querySelectorAll('.quiz-opt').forEach(b => b.disabled = true);
+      if (chosen === correct) {
+        btn.classList.add('correct');
+        showToast('✅ Jawaban Tepat! Mumtaz!');
+      } else {
+        btn.classList.add('wrong');
+        showToast('❌ Kurang tepat, cek pembahasannya ya.');
+      }
+      document.getElementById('explain-' + qId).classList.remove('hidden');
+    }
+
+    // ==================== FUNGSI SESI USTADZ ====================
+    async function loadUstadzDashboard() {
+      let users = [];
+      if (sb) {
+        const { data } = await sb.from('amtsilati_users').select('*').eq('role', 'santri').order('created_at', { ascending: false });
+        users = data || [];
+      } else {
+        users = getLocalUsers().filter(u => u.role === 'santri');
+      }
+
+      const pending = users.filter(u => u.status === 'pending');
+      document.getElementById('pending-count-text').textContent = pending.length
+        ? `Ada ${pending.length} santri baru menunggu ACC Anda.`
+        : 'Semua pendaftaran santri sudah diproses.';
+
+      const listEl = document.getElementById('ustadz-santri-list');
+      if (!users.length) {
+        listEl.innerHTML = `<p style="font-size:12.5px; color:var(--muted);">Belum ada santri yang mendaftar.</p>`;
+        return;
+      }
+
+      listEl.innerHTML = users.map(s => `
+        <div style="border:1px solid var(--border); border-radius:14px; padding:12px; margin-bottom:10px;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong>${s.nama_lengkap}</strong>
+            <span class="badge-status ${s.status === 'approved' ? 'badge-approved' : 'badge-pending'}">${s.status.toUpperCase()}</span>
+          </div>
+          <div style="font-size:12px; color:var(--muted); margin:4px 0;">
+            NIS: <b>${s.nis}</b> • Kelas: <b>${s.kelas}</b><br/>
+            Ibu: ${s.nama_ibu} • WA: ${s.no_wa}
+          </div>
+          ${s.status === 'pending' ? `
+            <div style="display:flex; gap:8px; margin-top:8px;">
+              <button class="btn-press" onclick="approveSantri('${s.nis}', 'approved')" style="flex:1; background:#10b981; color:#fff; border:none; padding:8px; border-radius:10px; font-weight:700; font-size:12px;">✅ ACC Santri</button>
+              <button class="btn-press" onclick="approveSantri('${s.nis}', 'rejected')" style="background:#fee2e2; color:#b91c1c; border:none; padding:8px 12px; border-radius:10px; font-weight:700; font-size:12px;">Tolak</button>
+            </div>
+          ` : ''}
+        </div>
+      `).join('');
+    }
+
+    async function approveSantri(nis, newStatus) {
+      if (sb) {
+        await sb.from('amtsilati_users').update({ status: newStatus }).eq('nis', nis);
+      } else {
+        const users = getLocalUsers().map(u => u.nis === nis ? { ...u, status: newStatus } : u);
+        localStorage.setItem('amtsilati_users', JSON.stringify(users));
+      }
+      showToast(newStatus === 'approved' ? '✅ Santri berhasil di-ACC!' : 'Pendaftaran ditolak.');
+      await loadUstadzDashboard();
+    }
+
+    async function addNewModule() {
+      const kategori = document.getElementById('new-mod-cat').value;
+      const judul = document.getElementById('new-mod-title').value.trim();
+      const ringkasan_materi = document.getElementById('new-mod-summary').value.trim();
+      const teks_arab = document.getElementById('new-mod-arab').value.trim();
+      const catatan_tatimmah = document.getElementById('new-mod-tatimmah').value.trim();
+
+      if (!judul || !ringkasan_materi) return showToast('⚠️ Judul dan Penjelasan Qoidah wajib diisi!');
+
+      const payload = {
+        kategori,
+        urutan: modulesData.length + 1,
+        judul,
+        subjudul: 'Materi Tambahan Ustadz',
+        ringkasan_materi,
+        teks_arab,
+        catatan_tatimmah
+      };
+
+      if (sb) {
+        await sb.from('amtsilati_modules').insert([payload]);
+      } else {
+        payload.id = 'custom_' + Date.now();
+        const saved = JSON.parse(localStorage.getItem('amtsilati_custom_mods') || '[]');
+        saved.push(payload);
+        localStorage.setItem('amtsilati_custom_mods', JSON.stringify(saved));
+      }
+
+      showToast('✅ Materi baru berhasil ditambahkan!');
+      document.getElementById('new-mod-title').value = '';
+      document.getElementById('new-mod-summary').value = '';
+      document.getElementById('new-mod-arab').value = '';
+      document.getElementById('new-mod-tatimmah').value = '';
+      await loadContentData();
+    }
+
+    function switchTab(tab) {
+      ['home', 'learn', 'quiz', 'ustadz', 'profile'].forEach(t => {
+        document.getElementById('tab-' + t).classList.toggle('hidden', t !== tab);
+        const nav = document.getElementById('nav-' + t);
+        if (nav) nav.classList.toggle('active', t === tab);
+      });
+    }
+
+    // PWA Service Worker & Install Prompt
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.getElementById('btn-install-pwa').classList.remove('hidden');
+    });
+
+    async function installPWA() {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      document.getElementById('btn-install-pwa').classList.add('hidden');
+    }
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    }
+
+    // Auto-restore session
+    window.addEventListener('DOMContentLoaded', () => {
+      const saved = localStorage.getItem('amtsilati_session');
+      if (saved) {
+        currentUser = JSON.parse(saved);
+        initApp();
+      }
+    });
+  </script>
+</body>
+</html>
