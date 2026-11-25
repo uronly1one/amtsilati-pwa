@@ -43,7 +43,6 @@
       background: var(--bg);
       min-height: 100vh;
       position: relative;
-      overflow-x: hidden;
       box-shadow: 0 20px 60px rgba(15, 23, 42, 0.15);
       padding-bottom: 84px;
     }
@@ -54,7 +53,6 @@
       line-height: 2.1;
     }
 
-    /* Smooth Page & Micro Animations */
     .screen {
       animation: pageEnter 0.45s var(--ease-spring) forwards;
     }
@@ -81,7 +79,6 @@
 
     .hidden { display: none !important; }
 
-    /* Auth Screen (Ruangguru Inspired Gradient + Floating Orbs) */
     .auth-hero {
       background: linear-gradient(135deg, #0284c7 0%, #0d9488 65%, #0f766e 100%);
       padding: 44px 24px 68px;
@@ -188,7 +185,6 @@
       cursor: pointer;
     }
 
-    /* Home Header (Ruangguru Signature Top Banner) */
     .home-header {
       background: linear-gradient(135deg, #0284c7 0%, #0d9488 100%);
       padding: 22px 20px 56px;
@@ -209,7 +205,6 @@
       font-weight: 700;
     }
 
-    /* Progress / Hero Card */
     .hero-progress {
       background: #fff;
       margin: -38px 18px 18px;
@@ -231,7 +226,6 @@
       transition: width 0.7s var(--ease-spring);
     }
 
-    /* Ruangguru Style 4-Item Subject Grid */
     .section-title {
       font-size: 15px;
       font-weight: 800;
@@ -275,7 +269,6 @@
     .subject-card h4 { font-size: 14px; font-weight: 800; margin-bottom: 3px; }
     .subject-card p { font-size: 11px; color: var(--muted); line-height: 1.4; }
 
-    /* Interactive Lesson & Bedah Lafadz */
     .card-box {
       background: #fff;
       margin: 0 18px 14px;
@@ -327,7 +320,6 @@
       margin-top: 12px;
     }
 
-    /* Quiz Options */
     .quiz-opt {
       width: 100%;
       text-align: left;
@@ -344,7 +336,6 @@
     .quiz-opt.correct { background: #ecfdf5; border-color: #10b981; color: #065f46; }
     .quiz-opt.wrong { background: #fef2f2; border-color: #ef4444; color: #991b1b; }
 
-    /* Bottom Navigation */
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -373,7 +364,6 @@
     .nav-item.active { color: var(--primary); }
     .nav-item span.ico { font-size: 20px; }
 
-    /* Toast & Loading */
     .toast {
       position: fixed;
       top: 18px;
@@ -407,7 +397,7 @@
     <!-- ==================== 1. HALAMAN LOGIN & REGISTRASI ==================== -->
     <div id="view-auth" class="screen">
       <div class="auth-hero">
-        <div class="brand-badge">📖 Ruang Amtsilati</div>
+        <div class="brand-badge">📖 AMTSILATI DIGITAL PWA</div>
         <h1 style="font-size:24px; font-weight:800; line-height:1.25;">Belajar Baca Kitab Kuning Jadi Mudah & Cepat</h1>
         <p style="font-size:13px; opacity:0.9; margin-top:6px;">Metode Praktis Penguasaan Qoidah, Jilid 1–2 & Tatimmah</p>
       </div>
@@ -419,7 +409,7 @@
 
         <div class="form-group">
           <label class="form-label">NIS / ID Pengampu *</label>
-          <input type="text" id="login-nis" class="form-input" placeholder="Contoh: 2026001 atau UST001" />
+          <input type="text" id="login-nis" class="form-input" placeholder="Contoh: 2026001 atau UST2026" />
         </div>
         <div class="form-group">
           <label class="form-label">Password *</label>
@@ -428,7 +418,7 @@
         <button class="btn-primary btn-press" onclick="handleLogin()">Masuk ke Ruang Belajar</button>
 
         <div class="auth-switch">
-          Santri belum punya akun? <a onclick="toggleAuthMode('register')">Daftar Santri di sini</a>
+          Santri baru belum punya akun? <a onclick="toggleAuthMode('register')">Daftar Santri di sini</a>
         </div>
       </div>
 
@@ -484,7 +474,6 @@
 
     <!-- ==================== 2. APLIKASI UTAMA (SANTRI & USTADZ) ==================== -->
     <div id="view-app" class="hidden">
-      <!-- HEADER -->
       <div class="home-header">
         <div class="top-row">
           <div>
@@ -498,7 +487,6 @@
 
       <!-- TAB 1: BERANDA -->
       <div id="tab-home" class="screen">
-        <!-- Kartu Progres Ala Ruangguru -->
         <div class="hero-progress stagger-1">
           <div style="display:flex; justify-content:space-between; align-items:center;">
             <span style="font-size:12px; font-weight:800; color:var(--primary);">🎯 TARGET KHATAM AMTSILATI</span>
@@ -510,7 +498,6 @@
           <p id="ui-progress-text" style="font-size:11.5px; color:var(--muted);">Selesaikan Rumus Qoidah terlebih dahulu sebelum masuk Jilid 1–2.</p>
         </div>
 
-        <!-- Menu 4 Pilar Metode Amtsilati -->
         <div class="section-title stagger-2">
           <span>Kurikulum Metode Amtsilati</span>
           <span style="font-size:11px; color:var(--primary);">Interaktif</span>
@@ -539,7 +526,6 @@
           </div>
         </div>
 
-        <!-- Panel Khusus Ustadz di Beranda (jika login sebagai Ustadz) -->
         <div id="ustadz-quick-banner" class="card-box hidden stagger-3" style="border:1.5px solid #0284c7;">
           <div style="display:flex; justify-content:space-between; align-items:center;">
             <div>
@@ -550,14 +536,13 @@
           </div>
         </div>
 
-        <!-- Daftar Bab Pelajaran Aktif -->
         <div class="section-title stagger-3">
           <span id="active-cat-title">Semua Materi Pilihan</span>
         </div>
         <div id="module-list" class="stagger-4"></div>
       </div>
 
-      <!-- TAB 2: RUANG BELAJAR INTERAKTIF (BEDAH LAFADZ & TATIMMAH) -->
+      <!-- TAB 2: RUANG BELAJAR INTERAKTIF -->
       <div id="tab-learn" class="screen hidden">
         <div class="card-box">
           <button class="btn-press" onclick="switchTab('home')" style="background:#f1f5f9; border:none; padding:6px 12px; border-radius:10px; font-size:12px; font-weight:700; margin-bottom:10px;">← Kembali ke Kurikulum</button>
@@ -578,7 +563,7 @@
         </div>
       </div>
 
-      <!-- TAB 3: LATIHAN INTERAKTIF (PENGGANTI VIDEO) -->
+      <!-- TAB 3: LATIHAN INTERAKTIF -->
       <div id="tab-quiz" class="screen hidden">
         <div class="card-box">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -595,7 +580,7 @@
         </div>
       </div>
 
-      <!-- TAB 4: SESI USTADZ (ACC SANTRI & INPUT MATERI) -->
+      <!-- TAB 4: SESI USTADZ -->
       <div id="tab-ustadz" class="screen hidden">
         <div class="card-box">
           <h3 style="font-size:16px; font-weight:800; margin-bottom:4px;">📋 Persetujuan Registrasi Santri</h3>
@@ -644,7 +629,6 @@
         </div>
       </div>
 
-      <!-- BOTTOM NAVIGATION -->
       <nav class="bottom-nav">
         <button class="nav-item active" id="nav-home" onclick="switchTab('home')">
           <span class="ico">🏠</span><span>Beranda</span>
@@ -669,12 +653,11 @@
     // =========================================================================
     // KONFIGURASI SUPABASE (Ganti dengan URL & ANON KEY dari project Supabase)
     // =========================================================================
-    const SUPABASE_URL = 'https://uwoltbgptwduvkkhfxzf.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV3b2x0YmdwdHdkdXZra2hmeHpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU1NzA5ODksImV4cCI6MjExMTE0Njk4OX0.apjEeyZ2byRiBOeqXyuh6JohyKVAbRf1_hLRuB3dGNY';
+    const SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co';
+    const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
     const isSupabaseConfigured = !SUPABASE_URL.includes('YOUR_PROJECT_ID');
     const sb = isSupabaseConfigured ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
-    // Data Cadangan Lokal (Berjalan otomatis sebelum Supabase dihubungkan)
     const FALLBACK_MODULES = [
       {
         id: 'm1', kategori: 'rumus_qoidah', urutan: 1,
@@ -745,7 +728,6 @@
     let activeModule = null;
     let activeCategoryFilter = 'all';
 
-    // Toast Helper
     function showToast(msg) {
       const el = document.getElementById('toast');
       el.textContent = msg;
@@ -754,13 +736,11 @@
       window._toastTimer = setTimeout(() => el.classList.add('hidden'), 3200);
     }
 
-    // Switch Login / Register
     function toggleAuthMode(mode) {
       document.getElementById('box-login').classList.toggle('hidden', mode !== 'login');
       document.getElementById('box-register').classList.toggle('hidden', mode !== 'register');
     }
 
-    // Live Password Validation (Huruf Besar, Huruf Kecil, Angka, Simbol Unik)
     function checkPasswordRules(pwd) {
       return {
         len: pwd.length >= 8,
@@ -780,18 +760,16 @@
       document.getElementById('rule-sym').classList.toggle('valid', r.sym);
     }
 
-    // LocalStorage Fallback Helper
     function getLocalUsers() {
       const saved = JSON.parse(localStorage.getItem('amtsilati_users') || 'null');
       if (saved) return saved;
       const seed = [
-        { nis: 'UST001', nama_lengkap: 'Ustadz Pengampu Amtsilati', kelas: 'Pengampu', nama_ibu: 'Admin', no_wa: '081234567890', password: 'Ustadz@123', role: 'ustadz', status: 'approved' }
+        { nis: 'UST2026', nama_lengkap: 'Ustadz Master Amtsilati', kelas: 'Pengampu', nama_ibu: 'Admin', no_wa: '081234567890', password: 'Amtsilati@1', role: 'ustadz', status: 'approved' }
       ];
       localStorage.setItem('amtsilati_users', JSON.stringify(seed));
       return seed;
     }
 
-    // Registrasi Santri Baru (Status = pending, wajib ACC Ustadz)
     async function handleRegister() {
       const nis = document.getElementById('reg-nis').value.trim();
       const nama = document.getElementById('reg-nama').value.trim();
@@ -816,10 +794,10 @@
 
       if (sb) {
         const { error } = await sb.from('amtsilati_users').insert([payload]);
-        if (error) return showToast('❌ Gagal daftar: NIS mungkin sudah terdaftar.');
+        if (error) return showToast('❌ Gagal daftar: ' + error.message);
       } else {
         const users = getLocalUsers();
-        if (users.some(u => u.nis === nis)) return showToast('❌ NIS sudah terdaftar!');
+        if (users.some(u => u.nis.toLowerCase() === nis.toLowerCase())) return showToast('❌ NIS sudah terdaftar!');
         users.push(payload);
         localStorage.setItem('amtsilati_users', JSON.stringify(users));
       }
@@ -829,21 +807,30 @@
       document.getElementById('login-nis').value = nis;
     }
 
-    // Login Satu Pintu (Santri & Ustadz cukup NIS + Password)
     async function handleLogin() {
       const nis = document.getElementById('login-nis').value.trim();
-      const pass = document.getElementById('login-pass').value;
+      const pass = document.getElementById('login-pass').value.trim();
 
       if (!nis || !pass) return showToast('⚠️ Masukkan NIS dan Password!');
 
       let user = null;
       if (sb) {
-        const { data, error } = await sb.from('amtsilati_users').select('*').eq('nis', nis).eq('password', pass).maybeSingle();
-        if (error || !data) return showToast('❌ NIS atau Password salah!');
+        const { data, error } = await sb
+          .from('amtsilati_users')
+          .select('*')
+          .ilike('nis', nis)
+          .maybeSingle();
+
+        if (error) {
+          return showToast('❌ Error database: ' + error.message);
+        }
+        if (!data || data.password !== pass) {
+          return showToast('❌ NIS atau Password salah!');
+        }
         user = data;
       } else {
         const users = getLocalUsers();
-        user = users.find(u => u.nis === nis && u.password === pass);
+        user = users.find(u => u.nis.toLowerCase() === nis.toLowerCase() && u.password === pass);
         if (!user) return showToast('❌ NIS atau Password salah!');
       }
 
@@ -875,11 +862,9 @@
       document.getElementById('ui-user-name').textContent = currentUser.nama_lengkap;
       document.getElementById('ui-user-meta').textContent = `NIS: ${currentUser.nis} • Kelas: ${currentUser.kelas}`;
 
-      // Tampilkan menu Ustadz hanya jika role === 'ustadz'
       document.getElementById('nav-ustadz').classList.toggle('hidden', !isUstadz);
       document.getElementById('ustadz-quick-banner').classList.toggle('hidden', !isUstadz);
 
-      // Profil
       document.getElementById('profile-details').innerHTML = `
         <div><strong>NIS:</strong> ${currentUser.nis}</div>
         <div><strong>Nama Lengkap:</strong> ${currentUser.nama_lengkap}</div>
@@ -1057,7 +1042,6 @@
       document.getElementById('explain-' + qId).classList.remove('hidden');
     }
 
-    // ==================== FUNGSI SESI USTADZ ====================
     async function loadUstadzDashboard() {
       let users = [];
       if (sb) {
@@ -1153,7 +1137,6 @@
       });
     }
 
-    // PWA Service Worker & Install Prompt
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
@@ -1173,7 +1156,6 @@
       navigator.serviceWorker.register('./sw.js').catch(() => {});
     }
 
-    // Auto-restore session
     window.addEventListener('DOMContentLoaded', () => {
       const saved = localStorage.getItem('amtsilati_session');
       if (saved) {
